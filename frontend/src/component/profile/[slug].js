@@ -12,13 +12,13 @@ function Profile() {
   const [post,setpost]=useState([])
   let[myurl,setmyurl]=useState()
     const location=useLocation()
-    const id=location.pathname.slice(9)
+    const id=location.pathname.slice(16)
     useEffect(() => {
       reload()
-    }, [profile,update])
+    }, [profile,update,id])
     useEffect(() => {
       getallpost()
-    }, [])
+    }, [id])
     const onchange=(e)=>{
       setval({...val,[e.target.name]:e.target.value})
     }
@@ -107,11 +107,11 @@ function Profile() {
             pauseOnHover
           />
        {profile&&update&&<div><div style={{height:110+'px'}} className="d-flex justify-content-around  border-primary border-bottom">
-            <div><img id='display' onClick={upload} style={{height:95+'px',width:90+'px',borderRadius:100+'px',cursor:'pointer'}} src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/></div>
+            <div>{id==localStorage.getItem('id')?<img id='display' onClick={upload} style={{height:95+'px',width:90+'px',borderRadius:100+'px',cursor:'pointer'}} src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>:<img id='display' style={{height:95+'px',width:90+'px',borderRadius:100+'px'}} src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>}</div>
             <div><p style={{color:'#6a6aed'}}>{user.firstname+' '+user.lastname}</p>
             <div className='d-flex justify-content-between'><p style={{marginRight:5+'px',color:'orange'}}>{post.length} Posts </p><Link to={'/allies'} style={{color:'blue',marginRight:5+'px',cursor:'pointer',textDecoration:"none"}}>{user.length!==0?user.followers.length>=1000?user.followers.length/1000+' k':'':''}{user.length!==0?user.followers.length>=1000000?user.followers.length/1000000+' m':'':''}{user.length!==0?user.followers.length<1000?user.followers.length:'':''}  Followers</Link><Link style={{marginRight:5+'px',color:'green',cursor:'pointer',textDecoration:'none'}} to={'/allies'}>{user.length!==0?user.following.length>=1000?user.following.length/1000+' k':'':''}{user.length!==0?user.following.length>=1000000?user.following.length/1000000+' m':'':''}{user.length!==0?user.following.length<1000?user.following.length:'':''}  Following</Link></div>
             </div>
-            <button onClick={()=>{setupdate(false)}} style={{height:30+'px',borderColor:'blue'}} className='btn btn-sm'>edit</button>
+            {id==localStorage.getItem('id')?<button onClick={()=>{setupdate(false)}} style={{height:30+'px',borderColor:'blue'}} className='btn btn-sm'>edit</button>:''}
         </div>
         <p style={{marginLeft:25+'vw',marginTop:50+'px',color:'purple'}}>All Posts</p>
         {post.map((k)=>{

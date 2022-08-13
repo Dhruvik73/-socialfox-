@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
+import {Link} from 'react-router-dom'
 function Allies() {
   const [val,setval]=useState([])
   const [following,setfollowing]=useState([])
@@ -113,13 +114,13 @@ function Allies() {
         <div className='col-md-12' style={{height:500+'px',width:35+'vw',marginLeft:20+'px'}}>
         <h6 style={{color:'gray',marginLeft:40+'px'}}>Allies</h6>
         {friend.map((k)=>{
-          return <div key={k._id} className='d-flex' style={{height:50+'px',marginTop:20+'px'}}><img className='border border-secondary' src={k.profilephoto?k.profilephoto:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" style={{height:40+'px',width:38+'px',margin:3+'px',borderRadius:50+'px'}}/>{k.firstname+' '+k.lastname}<p onClick={validator(k._id)?()=>{unfollowme(k._id)}:()=>{followme(k._id)}} style={{marginLeft:15+'px',color:'blue',fontSize:14+'px',cursor:'pointer'}}>{validator(k._id)?"UnFollow":"Follow"}</p></div>
+          return <div key={k._id} className='d-flex' style={{height:50+'px',marginTop:20+'px'}}><Link to={`profile/${k._id}`}><img className='border border-secondary' src={k.profilephoto?k.profilephoto:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" style={{height:40+'px',width:38+'px',margin:3+'px',borderRadius:50+'px'}}/></Link>{k.firstname+' '+k.lastname}<p onClick={validator(k._id)?()=>{unfollowme(k._id)}:()=>{followme(k._id)}} style={{marginLeft:15+'px',color:'blue',fontSize:14+'px',cursor:'pointer'}}>{validator(k._id)?"UnFollow":"Follow"}</p></div>
         })}
         </div>
         <div className='col-md-12' style={{height:500+'px',width:35+'vw',marginLeft:20+'px'}}>
         <h6 style={{color:'gray',marginLeft:40+'px'}}>Suggested</h6>
         {val.map((k)=>{
-          return <div key={k._id} className='d-flex' style={{height:50+'px',marginTop:20+'px'}}><img className='border border-secondary' src={k.profilephoto?k.profilephoto:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" style={{height:40+'px',width:38+'px',margin:3+'px',borderRadius:50+'px'}}/>{k.firstname+' '+k.lastname}<p onClick={validator(k._id)?()=>{unfollowme(k._id)}:()=>{followme(k._id)}} style={{marginLeft:15+'px',color:'blue',fontSize:14+'px',cursor:'pointer'}}>{validator(k._id)?"UnFollow":"Follow"}</p></div>
+          return <div key={k._id} className='d-flex' style={{height:50+'px',marginTop:20+'px'}}><Link to={`profile/${k._id}`}><img className='border border-secondary' src={k.profilephoto?k.profilephoto:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" style={{height:40+'px',width:38+'px',margin:3+'px',borderRadius:50+'px'}}/></Link>{k.firstname+' '+k.lastname}<p onClick={validator(k._id)?()=>{unfollowme(k._id)}:()=>{followme(k._id)}} style={{marginLeft:15+'px',color:'blue',fontSize:14+'px',cursor:'pointer'}}>{validator(k._id)?"UnFollow":"Follow"}</p></div>
         })}
         </div>
     </div>

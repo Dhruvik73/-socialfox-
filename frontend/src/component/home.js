@@ -78,6 +78,7 @@ function Home() {
     }
   }
   const addlike=async(id)=>{
+    setpage(5)
     const mybody={
       method:"POST",
       headers:{'Content-Type':'application/json'},
@@ -96,9 +97,9 @@ function Home() {
         }
         await fetch('http://localhost:5001/post/like',body)
     }
-    setpage(5)
   }
   const removelike=async(id)=>{
+    setpage(5)
     const mybody={
       method:"POST",
       headers:{'Content-Type':'application/json'},
@@ -117,9 +118,9 @@ function Home() {
         }
         await fetch('http://localhost:5001/post/like',body)
     }
-    setpage(5)
   }
   const adddislike=async(id)=>{
+    setpage(5)
     const mybody={
       method:"POST",
       headers:{'Content-Type':'application/json'},
@@ -138,9 +139,9 @@ function Home() {
         }
         await fetch('http://localhost:5001/post/like',body)
     }
-    setpage(5)
   }
   const removedislike=async(id)=>{
+    setpage(5)
     const mybody={
       method:"POST",
       headers:{'Content-Type':'application/json'},
@@ -159,7 +160,6 @@ function Home() {
         }
         await fetch('http://localhost:5001/post/like',body)
     }
-    setpage(5)
   }
   return (
     <div className='container' style={{marginTop:100+'px'}}>
@@ -171,8 +171,8 @@ function Home() {
           <div className='d-flex justify-content-around'>
          <div>
             {post.map((k)=>{
-              return <div className='row' key={k._id} style={{marginLeft:60+'px',marginTop:20+'px'}}><div className='col-md-6 border rounded' style={{height:450+'px',width:35+'vw',backgroundColor:'#e1eedd'}}>
-              <div style={{height:50+'px'}}><div><img className='border border-secondary' src={k.profile?k.profile:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" style={{height:40+'px',margin:3+'px',borderRadius:50+'px'}}/>{k.username}</div></div>
+              return <div className='row' key={k._id} style={{marginLeft:60+'px',marginTop:20+'px'}}><div className='col-md-6 border rounded' style={{height:450+'px',width:35+'vw',backgroundColor:'#f6f5f3'}}>
+              <div style={{height:50+'px'}}><div><Link to={`allies/profile/${k.userid}`}><img className='border border-secondary' src={k.profile?k.profile:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" style={{height:40+'px',margin:3+'px',borderRadius:50+'px'}}/></Link>{k.username}</div></div>
               <div style={{height:350+'px',marginTop:3+'px'}}><div className='d-flex justify-content-center'><img className='border border-secondary' alt="not load" src={k.post} style={{height:40+'vh',width:20+'vw',margin:3+'px'}}/></div>
               <div style={{height:60+'px',marginTop:3+'px',color:'#157ad0f5'}}>{k.like.includes(localStorage.getItem('id'))?!k.dislike.includes(localStorage.getItem('id'))?<span onClick={()=>{removelike(k._id)}} style={{marginLeft:10+'px',fontSize:25+'px',cursor:'pointer'}}><AiFillLike/></span>:'':''}
               {!k.like.includes(localStorage.getItem('id'))?!k.dislike.includes(localStorage.getItem('id'))?<span onClick={()=>{addlike(k._id)}} style={{marginLeft:10+'px',fontSize:25+'px',cursor:'pointer'}}><AiOutlineLike/></span>:'':''}
