@@ -4,14 +4,19 @@ import {FcNext,FcPrevious} from 'react-icons/fc'
 function Showstory() {
     const location=useLocation()
     const id=location.pathname.slice(1)
+    const[stories,setstories]=useState([])
     const [story, setstory] = useState([])
     const [length,setlength]=useState(0)
     const [user,setuser]=useState([])
     let [i,seti]=useState(0)
     const [view,setview]=useState([])
     useEffect(() => {
-        getstories(i)
+        getallstories()
     },[])
+    useEffect(() => {
+      getstories(i)
+    }, [stories])
+    
     const prev=()=>{
       if (i!==0) {
         seti(i-1)
@@ -24,18 +29,22 @@ function Showstory() {
       getstories(i+1)
       }
     }
+    const getallstories=async()=>{
+      const body={
+        method:"POST",
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({id:id})
+      }
+      const res=await fetch('http://localhost:5001/story/getstory',body)
+      const result=await res.json()
+      setstories(result.mystory)
+      console.log(result.mystory)
+    }
     const getstories=async(i)=>{
-        const body={
-            method:"POST",
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({id:id})
-          }
-          const res=await fetch('http://localhost:5001/story/getstory',body)
-          const result=await res.json()
           let onestory=[]
-          if(result.mystory.length>0){
-          onestory.push(result.mystory[i])
-          setlength(result.mystory.length)
+          if(stories.length>0){
+          onestory.push(stories[i])
+          setlength(stories.length)
           setstory(onestory)
           let views=onestory[0].views
           const b={
