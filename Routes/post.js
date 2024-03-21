@@ -36,47 +36,60 @@ const adjustColor=(color)=> {
 }
 router.post('/add',async(req,res)=>{
     try {
-
-        const matches = req.body.post.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
-        if (!matches || matches.length !== 3) {
-            res.status(500).json({ 'error': "Upload valid file" })
+        var postcount = (await post.where({ userid: req.body.id }).sort({post:-1})).at(0)
+        if(postcount){
+            postcount=postcount.userPostCount
         }
-
-        const imageType = matches[1];
-        const imageData = matches[2];
-        const fs = require('fs')
-        // Convert the base64 image data to binary
-        const binaryData = Buffer.from(imageData, 'base64');
-        var postcount = await post.where({ userid: req.body.id }).count()
-        
-        const path = `../backend/frontend/src/images/${req.body.id}-post-${postcount + 1}.${imageType}`;
-        fs.writeFileSync(path, binaryData, 'binary', (e) => {
-            if (e) {
-                res.status(500).json({ 'error': e })
+        else{
+            postcount=0;
+        }
+        const userPosts=[];
+        const bgColors=[];
+        for(const post of req.body.post){
+            const matches = post.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
+            if (!matches || matches.length !== 3) {
+                res.status(500).json({ 'error': "Upload valid file" })
             }
-        })
-        const buffer=fs.readFileSync(systemPath.resolve(path))
-        const options = {
-            count: 10,
-            type: `image/${imageType}`
-          }
-        getColors(buffer, options).then(async colors => {
-            var mypost = await post.create({
-                userid: req.body.id,
-                post: `${req.body.id}-post-${postcount + 1}.${imageType}`,
-                comment: req.body.comment,
-                like: req.body.like,
-                dislike: req.body.dislike,
-                description: req.body.des,
-                profile: req.body.profile,
-                username: req.body.username,
-                bgColor:adjustColor(colors[0].hex())
+    
+            const imageType = matches[1];
+            const imageData = matches[2];
+            const fs = require('fs')
+            // Convert the base64 image data to binary
+            const binaryData = Buffer.from(imageData, 'base64');
+            const path = `../backend/frontend/src/images/${req.body.id}-post-${postcount + 1}.${imageType}`;
+            fs.writeFileSync(path, binaryData, 'binary', (e) => {
+                if (e) {
+                    res.status(500).json({ 'error': e })
+                }
             })
-            res.status(200).json({ mypost })
-          })
+            userPosts.push(`${req.body.id}-post-${postcount + 1}.${imageType}`);
+            const buffer=fs.readFileSync(systemPath.resolve(path))
+            const options = {
+                count: 1,
+                type: `image/${imageType}`
+              }
+            const colorRes=await getColors(buffer, options);
+            await Promise.all(colorRes.map((color)=>{bgColors.push(adjustColor(color.hex()))}))
+            postcount++;
+        };
+        if(bgColors.length>0){
+        await post.create({
+            userid: req.body.id,
+            post: userPosts,
+            comment: req.body.comment,
+            like: req.body.like,
+            dislike: req.body.dislike,
+            description: req.body.des,
+            profile: req.body.profile,
+            username: req.body.username,
+            bgColor:bgColors,
+            userPostCount:postcount
+        })
+    }
+        res.status(200).json({'message':"Posts uploaded successfully!"})
         
     } catch (e) {
-        res.status(500).json({ 'error': e.message })
+        res.status(500).json({ 'error': "Some error occured try again!" })
     }
 })
 router.post('/fetchpost', async (req, res) => {

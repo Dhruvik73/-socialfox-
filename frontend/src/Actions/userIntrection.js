@@ -1,3 +1,10 @@
+function sendRes(res,type){
+    return{
+        type:type,
+        res:res
+    }
+}
+
 export function followMe(id){
     return async dispatch=>{
         const mybody = {
@@ -11,9 +18,3 @@ export function followMe(id){
     }
 }
 
-export function sendRes(res,type){
-    return{
-        type:type,
-        res:res
-    }
-}

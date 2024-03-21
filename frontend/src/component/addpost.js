@@ -2,20 +2,27 @@ import React, { useState } from 'react'
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
+import Post from './Post';
 function Addpost() {
     const [des,setdes]=useState('')
-    const [val, setval] = useState(false)
     let id=localStorage.getItem('id')
-    const [myurl,setmyurl]=useState()
-    const seturl=()=>{
-      const image=document.getElementById('image').files[0]
-      const reader=new FileReader()
-      reader.readAsDataURL(image)
-      reader.onload=(e)=>{
-    document.getElementById('display').src=e.target.result   
-    setmyurl(e.target.result)
-  }
-  setval(true)
+    const [userPosts,setUserPosts]=useState([])
+    const getUserPosts=async ()=>{
+      const image=document.getElementById('image').files
+      const imagePromises=[]
+      for (let index = 0; index < image.length; index++) {
+        imagePromises.push(getFilePromise(image[index]))
+      }
+      let images=await Promise.all(imagePromises);
+    setUserPosts(images)
+    }
+    const getFilePromise=(image)=>{
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader()
+        reader.readAsDataURL(image)
+        reader.onload=(e)=>{resolve(e.target.result)}
+        reader.onerror=(e)=>{reject(e)} 
+      })
     }
 const onchange=(e)=>{
   setdes(e.target.value)
@@ -31,12 +38,11 @@ const submit=async()=>{
    let mybody={
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({id:id,post:myurl,des:des,username:myresult.myuser.firstname+" "+myresult.myuser.lastname,profile:myresult.myuser.profilephoto})
+    body:JSON.stringify({id:id,post:userPosts,des:des,username:myresult.myuser.firstname+" "+myresult.myuser.lastname,profile:myresult.myuser.profilephoto})
   }
   const res=await fetch('http://localhost:5001/post/add',mybody)
    const result= await res.json()
-   if(result.mypost){
-    setval(true)
+   if(!result.error){
     toast.success("Post Uploaded Successfully 👍", {
       position: "top-right",
       autoClose: 1000,
@@ -48,6 +54,17 @@ const submit=async()=>{
     });
     setTimeout(()=>{
     },1800)
+   }
+   else{
+    toast.warning(result.error, {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
    }
 }
   return (
@@ -64,14 +81,15 @@ const submit=async()=>{
             pauseOnHover
           />
     <div className=" d-flex upload border-bottom border-primary">
-      <input type="file" className="form-control" accept='image/*' id="image" onChange={seturl} style={{width:50+'vw',marginBottom:10+'px'}} />
+      <input type="file" className="form-control" accept='image/*' id="image" multiple onChange={getUserPosts} style={{width:50+'vw',marginBottom:10+'px'}} />
       <button type="button" style={{marginLeft:10+'px',marginBottom:10+'px'}} onClick={submit}  className='border-bottom border-primary btn btn-sm'>post</button>
      </div>
-     <div className='d-flex justify-content-around'>
-     {val&&<div style={{marginTop:30+'px'}}><p>Preview</p><img id='display'className='border border-secondary' style={{height:30+'vh',margin:3+'px'}}/>
-     </div>}<div style={{marginTop:30+'px'}}><p>description</p> <div className="form-outline mb-2">
+     <div className='row justify-content-center'>
+     {userPosts.length>0&&<div className='mt-3 col-md-5 col-sm-12 border rounded postcard'><p className='mt-3'>Preview</p><div className='h-75 mt-4'><Post Identifier={0} posts={userPosts} type={"Preview"}></Post></div>
+     </div>}
+     {userPosts.length>0&&<div className='mt-3 col-md-5 col-sm-12'><p>description</p> <div className="form-outline mb-2">
                       <input type="text" onChange={onchange} id="des" name='des' className="form-control form-control-lg" />
-                    </div></div></div>
+                    </div></div>}</div>
     </div>
   )
 }

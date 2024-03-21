@@ -10,7 +10,7 @@ const postschema=new Schema({
         type:String
     },
     post:{
-        type:String,
+        type:Array,
         required:true
     },
     comment:{
@@ -29,7 +29,16 @@ const postschema=new Schema({
         type:String
      },
      bgColor:{
-        type:String,
+        type:Array,
+        required:true
+     },
+     insertDate:{
+        type:Date,
+        required:true,
+        default:Date.now()
+     },
+     userPostCount:{
+        type:Number,
         required:true
      }
 })

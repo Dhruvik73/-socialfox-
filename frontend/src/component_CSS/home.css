@@ -19,3 +19,16 @@
     cursor: pointer;
     color: rgb(88, 88, 252);
 }
+
+.cursor{
+    cursor: pointer;
+}
+.userPosts{
+    transition:opacity 2s ease;
+}
+.w-5{
+    width: 5%;
+}
+.w-90{
+    width: 90%;
+}

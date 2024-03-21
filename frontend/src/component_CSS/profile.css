@@ -1,0 +1,15 @@
+.roundProfile{
+    width: 75px !important;
+    height: 75px !important;
+    object-fit: cover;
+    border-radius: 50%;
+    object-position: center;
+    overflow: hidden;
+}
+a{
+    text-decoration: none !important;
+    color: black !important;
+}
+.h-80{
+    height: 80%;
+}

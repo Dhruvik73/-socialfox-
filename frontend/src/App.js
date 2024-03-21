@@ -4,7 +4,6 @@ import Home from './component/home';
 import Login from './component/login';
 import Navbar from './component/navbar';
 import Register from './component/register';
-import Slug from './component/comment/[slug]';
 import Allies from './component/allies';
 import Search from './component/search';
 import Profile from './component/profile/[slug]';
@@ -22,7 +21,6 @@ function App() {
           <Route path='/' element={<Home/>}></Route>
           <Route path='/login' element={<Login/>}></Route>
           <Route path='/register' element={<Register/>}></Route>
-          <Route path='/comment/:slug' element={<Slug/>}></Route>
           <Route path='/allies' element={<Allies/>}></Route>
           <Route path='allies/profile/:id' element={<Profile/>}/>
           <Route path='/addpost' element={<Addpost/>}/>

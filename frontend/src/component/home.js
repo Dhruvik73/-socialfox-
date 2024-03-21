@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import '../component_CSS/home.css'
 import ReactDOMServer from 'react-dom/server';
 import SuggestedAllies from './suggestedAllies';
+import Post from './Post';
 function Home() {
   const [page,setpage]=useState(5)
   const [post,setpost]=useState([])
@@ -202,16 +203,16 @@ function Home() {
           
         >
           <div className='d-flex justify-content-around row'>
-         <div className='col-md-6'>
-            {post.map((k)=>{
-              return <div className='w-75 border rounded mt-5 postcard' key={k._id} style={{backgroundColor:k.bgColor}}>
+         <div className='col-lg-4 col-md-6 col-sm-8 d-flex align-items-center flex-column'>
+            {post.map((k,index)=>{
+              return <div className='w-100 border rounded mt-5 postcard' key={k._id} id={`${k._id}-postcard-${index}`} style={{backgroundColor:k.bgColor[0]}}>
                   <div className='d-flex align-items-center mt-2 ms-2 h-10'><div className='round'><Link to={`allies/profile/${k.userid}`}>
                     <img className='border border-secondary w-100 h-100' src={k.profile ? k.profile : 'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" /></Link>
                   </div><span className='ms-3'>{k.username}</span></div>
                   <div className='h-90'>
                     <div className='d-flex flex-column align-items-center justify-content-center h-100 mt-2'>
-                    <div className='h-75 w-75 object-fit-contain'>
-                      <img className='border rounded border-secondary w-100 h-100' id={k._id} alt="not load" src={require(`../images/${k.post}`)} />
+                    <div className='h-75 w-100'>
+                      <Post posts={k.post} type={"Home"} Identifier={k._id} bgColors={k.bgColor} Rank={index}></Post>
                       </div>
                       <div className='w-75 h-25' id={`likeBtns-${k._id}`}>{k.like.includes(localStorage.getItem('id')) ? <span className='likebtns' id={`fillLike-${k._id}`} onClick={() => { removelike(k._id) }}><AiFillLike/></span> : '' }
                       {!k.like.includes(localStorage.getItem('id')) ? <span className='likebtns' id={`like-${k._id}`} onClick={() => { addlike(k._id) }}><AiOutlineLike /></span> : '' }
@@ -225,7 +226,7 @@ function Home() {
                 </div>
             })}
           </div>
-          <div className='col-md-6' style={{ height: 400 + 'px'}}>
+          <div className='col-lg-4 col-md-6 col-sm-8 position-sticky d-flex align-items-center flex-column' style={{ top:100+'px'}}>
             <p style={{ color: 'gray' }}>Make More Allies 👍👍🤞 <Link to={'/allies'} style={{ color: 'blue', cursor: 'pointer', textDecoration: "none" }}>See All</Link></p>
             <SuggestedAllies></SuggestedAllies>
           </div>

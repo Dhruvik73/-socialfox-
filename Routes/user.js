@@ -148,8 +148,9 @@ async(req,res)=>{
   res.status(200).json({myuser})
 })
 router.post('/search',async(req,res)=>{
-  const users=await user.find({$or:[{firstname:{$regex:req.body.query.trim()}},{lastname:{$regex:req.body.query.trim()}}]})
-  res.status(200).json({users})
+  const followedUsers=await user.find({$and:[{$or:[{firstname:{$regex:req.body.query.trim()}},{lastname:{$regex:req.body.query.trim()}}]},{"followers":{$in:[req.body.logedUser]}},{"_id":{$ne:req.body.logedUser}}]}).select("id firstname lastname profilephoto");
+  const unKnownUsers=await user.find({$and:[{$or:[{firstname:{$regex:req.body.query.trim()}},{lastname:{$regex:req.body.query.trim()}}]},{"followers":{$nin:[req.body.logedUser]}},{"_id":{$ne:req.body.logedUser}}]}).select("id firstname lastname profilephoto")
+  res.status(200).json({followedUsers,unKnownUsers})
 })
 router.post('/forgot',async(req,res)=>{
   const salt=await bcrypt.genSalt(10)

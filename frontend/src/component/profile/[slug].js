@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import '../../component_CSS/profile.css'
+import Post from '../Post';
 function Profile() {
   const [profile, setprofile] = useState(true)
   const [url, seturl] = useState('')
@@ -94,7 +96,7 @@ function Profile() {
       setuser(JSON.parse(JSON.stringify(result.myuser)))
     }
   return (
-    <div className='container' style={{marginTop:100+'px'}}>
+    <div className='container'>
       <ToastContainer
             position="top-right"
             autoClose={1000}
@@ -106,26 +108,22 @@ function Profile() {
             draggable
             pauseOnHover
           />
-       {profile&&update&&<div><div style={{height:110+'px'}} className="d-flex justify-content-around  border-primary border-bottom">
-            <div>{id==localStorage.getItem('id')?<img id='display' onClick={upload} style={{height:95+'px',width:90+'px',borderRadius:100+'px',cursor:'pointer'}} src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>:<img id='display' style={{height:95+'px',width:90+'px',borderRadius:100+'px'}} src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>}</div>
-            <div><p style={{color:'#6a6aed'}}>{user.firstname+' '+user.lastname}</p>
-            <div className='d-flex justify-content-between'><p style={{marginRight:5+'px',color:'orange'}}>{post.length} Posts </p><Link to={'/allies'} style={{color:'blue',marginRight:5+'px',cursor:'pointer',textDecoration:"none"}}>{user.length!==0?user.followers.length>=1000?user.followers.length/1000+' k':'':''}{user.length!==0?user.followers.length>=1000000?user.followers.length/1000000+' m':'':''}{user.length!==0?user.followers.length<1000?user.followers.length:'':''}  Followers</Link><Link style={{marginRight:5+'px',color:'green',cursor:'pointer',textDecoration:'none'}} to={'/allies'}>{user.length!==0?user.following.length>=1000?user.following.length/1000+' k':'':''}{user.length!==0?user.following.length>=1000000?user.following.length/1000000+' m':'':''}{user.length!==0?user.following.length<1000?user.following.length:'':''}  Following</Link></div>
+       {profile&&update&&<div><div className="d-flex justify-content-around border-primary border-bottom align-items-center">
+            <div className='roundProfile col-lg-5 col-md-5'>{id==localStorage.getItem('id')?<img className='w-100 h-100' id='display' onClick={upload} src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>:<img className='w-100 h-100' id='display' src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>}</div>
+
+            <div className='col-lg-5 col-md-5'><p>{user.firstname+' '+user.lastname}</p>
+            <div className='d-flex justify-content-between'><p>{post.length} Posts </p><Link to={'/allies'}>{user.length!==0?user.followers.length>=1000?user.followers.length/1000+' k':'':''}{user.length!==0?user.followers.length>=1000000?user.followers.length/1000000+' m':'':''}{user.length!==0?user.followers.length<1000?user.followers.length:'':''}  Followers</Link><Link to={'/allies'}>{user.length!==0?user.following.length>=1000?user.following.length/1000+' k':'':''}{user.length!==0?user.following.length>=1000000?user.following.length/1000000+' m':'':''}{user.length!==0?user.following.length<1000?user.following.length:'':''}  Following</Link></div>
             </div>
-            {id==localStorage.getItem('id')?<button onClick={()=>{setupdate(false)}} style={{height:30+'px',borderColor:'blue'}} className='btn btn-sm'>edit</button>:''}
+            {id==localStorage.getItem('id')?<button onClick={()=>{setupdate(false)}} className='btn btn-outline-info btn-sm col-md-1 h-25'>edit</button>:''}
         </div>
-        <p style={{marginLeft:25+'vw',marginTop:50+'px',color:'purple'}}>All Posts</p>
-        {post.map((k)=>{
-          return  <div key={k._id} className='row' style={{marginLeft:25+'vw',marginTop:50+'px'}}>
-          <div className='col-md-6 border rounded' style={{height:400+'px',width:35+'vw',backgroundColor:'ButtonFace'}}>
-          <div style={{height:350+'px',marginTop:3+'px'}}><div className='d-flex justify-content-center'><img className='border border-secondary' alt="not load" src={k.post} style={{height:350+'px',width:25+'vw',margin:3+'px',marginTop:20+'px'}}/></div></div>
-              </div>
-              <p>{k.description}</p>
-              </div>
-        })}</div>}
-                {!profile&&<div><div className='container' style={{marginTop:100+'px'}}>
+        <p>All Posts</p><div className='d-flex flex-column align-items-center'>
+        {post.map((k,index)=>{
+          return <div className='w-50 border rounded mt-5 postcard d-flex align-items-center' key={k._id} id={`${k._id}-postcard-${index}`} style={{backgroundColor:k.bgColor[0],height:350+'px'}}><div className='w-100 h-80'><Post posts={k.post} type={"Home"} Identifier={k._id} bgColors={k.bgColor} Rank={index}></Post></div></div>
+        })}</div></div>}
+                {!profile&&<div><div className='container'>
     <div className=" d-flex upload border-bottom border-primary">
-      <input type="file" className="form-control" accept='image/*' onChange={add} id="image" style={{width:50+'vw',marginBottom:10+'px'}} />
-     <button type="submit" style={{marginLeft:10+'px',marginBottom:10+'px'}} onClick={upload} className='border-bottom border-primary btn btn-sm'>upload</button>
+      <input type="file" className="form-control" accept='image/*' onChange={add} id="image"/>
+     <button type="submit" onClick={upload} className='border-bottom border-primary btn btn-sm'>upload</button>
      </div>
     </div></div>}
     {!update&&<div>
