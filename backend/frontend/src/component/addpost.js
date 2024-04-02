@@ -28,17 +28,10 @@ const onchange=(e)=>{
   setdes(e.target.value)
 }
 const submit=async()=>{
-  let body={
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({id:id})
-  }
-  const myres=await fetch('http://localhost:5001/user/fetchuser',body)
-   const myresult= await myres.json()
    let mybody={
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({id:id,post:userPosts,des:des,username:myresult.myuser.firstname+" "+myresult.myuser.lastname,profile:myresult.myuser.profilephoto})
+    body:JSON.stringify({id:id,post:userPosts,des:des})
   }
   const res=await fetch('http://localhost:5001/post/add',mybody)
    const result= await res.json()

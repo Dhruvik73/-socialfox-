@@ -1,20 +1,16 @@
 const mongoose=require('mongoose')
+const user = require('./user')
+const comment = require('./comment')
 const {Schema}=mongoose
 
 const postschema=new Schema({
-    userid:{
-        type:String,
-        required:true
-    },
-    profile:{
-        type:String
+    user:{
+        type:mongoose.Types.ObjectId,
+        ref:user
     },
     post:{
         type:Array,
         required:true
-    },
-    comment:{
-        type:Array
     },
     like:{
         type:Array
@@ -25,9 +21,6 @@ const postschema=new Schema({
     description:{
         type:String
     },
-     username:{
-        type:String
-     },
      bgColor:{
         type:Array,
         required:true

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useDeferredValue, useTransition } from 'react'
 import {AiOutlineLike,AiFillLike,AiOutlineDislike,AiFillDislike} from 'react-icons/ai'
 import {FaComment} from 'react-icons/fa'
 import {Link} from 'react-router-dom'
@@ -7,10 +7,15 @@ import '../component_CSS/home.css'
 import ReactDOMServer from 'react-dom/server';
 import SuggestedAllies from './suggestedAllies';
 import Post from './Post';
+import Comment from './Comment';
 function Home() {
-  const [page,setpage]=useState(5)
-  const [post,setpost]=useState([])
-  const [count,setcount]=useState(0)
+  const [page,setpage]=useState(5);
+  const [post,setpost]=useState([]);
+  const userId=localStorage.getItem("id");
+  const [count,setcount]=useState(0);
+  const [postId,setPostId]=useState(0);
+  const [comments,setComments]=useState([]);
+  const defferedComments=useDeferredValue(comments);
   useEffect(() => {
     verify()
     fetchpost()
@@ -46,25 +51,17 @@ function Home() {
     
   }
   const fetchpost=async()=>{
-    const body={
-      method:"POST",
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({limit:0})
-    }
-    const myres=await fetch('http://localhost:5001/post/fetchpost',body)
-    const myresult=await myres.json()
-    if(myresult.totalPost){
-     setcount(myresult.totalPost)
-    }
+    const userId=localStorage.getItem('id')
     const mybody={
       method:"POST",
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({limit:page})
+      body:JSON.stringify({limit:page,userId:userId})
     }
     const res=await fetch('http://localhost:5001/post/fetchpost',mybody)
     const result=await res.json()
     if(result.allpost){
      setpost(result.allpost)
+     setcount(result.totalPost)
     }
   }
   const fetchmoredata=async()=>{
@@ -193,6 +190,18 @@ function Home() {
     }
 
   }
+
+  const getComments=async(currentPostId)=>{
+      if(currentPostId!==postId){
+      setPostId(currentPostId)
+    const body={
+      method:"POST",
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({postId:currentPostId,userId:userId})
+    }
+    await fetch('http://localhost:5001/post/getComments',body).then((res)=>res.json()).then((res)=>setComments(res.comments))
+  }
+  }
   return (
     <div className='container'>
          <InfiniteScroll
@@ -206,11 +215,11 @@ function Home() {
          <div className='col-lg-4 col-md-6 col-sm-8 d-flex align-items-center flex-column'>
             {post.map((k,index)=>{
               return <div className='w-100 border rounded mt-5 postcard' key={k._id} id={`${k._id}-postcard-${index}`} style={{backgroundColor:k.bgColor[0]}}>
-                  <div className='d-flex align-items-center mt-2 ms-2 h-10'><div className='round'><Link to={`allies/profile/${k.userid}`}>
-                    <img className='border border-secondary w-100 h-100' src={k.profile ? k.profile : 'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" /></Link>
-                  </div><span className='ms-3'>{k.username}</span></div>
+                  <div className='d-flex align-items-center mt-2 ms-2 h-10'><div className='round'><Link to={`allies/profile/${k.user.userid}`}>
+                    <img className='border border-secondary w-100 h-100' src={k.user.profilephoto ? k.user.profilephoto : 'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" /></Link>
+                  </div><span className='ms-3'>{k.user.firstname} {k.user.lastname}</span></div>
                   <div className='h-90'>
-                    <div className='d-flex flex-column align-items-center justify-content-center h-100 mt-2'>
+                    <div className='d-flex flex-column align-items-center justify-content-center h-100 mt-1'>
                     <div className='h-75 w-100'>
                       <Post posts={k.post} type={"Home"} Identifier={k._id} bgColors={k.bgColor} Rank={index}></Post>
                       </div>
@@ -219,7 +228,10 @@ function Home() {
                       {k.dislike.includes(localStorage.getItem('id')) ? <span className='likebtns ms-3' id={`fillDislike-${k._id}`} onClick={() => { removedislike(k._id) }}><AiFillDislike /></span> : '' }
                       {!k.dislike.includes(localStorage.getItem('id')) ? <span className='likebtns ms-3' id={`dislike-${k._id}`} onClick={() => { adddislike(k._id) }}><AiOutlineDislike /></span> : '' }
                       <span className='likebtns ms-3'><Link to={`/comment/${k._id}`}><FaComment /></Link></span><br></br>
-                      <span id={`likeCount-${k._id}`}>{k.like.length} </span> Likes <span id={`dislikeCount-${k._id}`}>{k.dislike.length} </span> disLikes {k.comment.length} comments <h6><Link to={`/comment/${k._id}`}>Show all</Link></h6>
+                      <span id={`likeCount-${k._id}`}>{k.like.length} </span> Likes <span id={`dislikeCount-${k._id}`}>{k.dislike.length} </span> disLikes {k.commentsCount} comments <br></br><button type="button" className="btn btn-info btn-sm mt-1" data-toggle="modal" onClick={()=>{getComments(k._id)}} data-target="#commentModal">
+  Show All
+</button>
+<Comment postId={postId} comments={defferedComments}></Comment>
                     </div>
                     </div>
                   </div>
