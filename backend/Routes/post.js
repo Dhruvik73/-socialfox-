@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const {body,validationResult} = require('express-validator')
 const post = require('../models/post')
 const getColors = require('get-image-colors')
 const systemPath = require('path')
@@ -175,7 +176,8 @@ router.post('/addComment', async (req, res) => {
         var userComment = await comment.create({
             user: req.body.userId,
             comment: req.body.comment,
-            post: req.body.postId
+            post: req.body.postId,
+            mentionedAllies:req.body.mentionedAllies
         });
         await userComment.save();
         res.status(200).json({ msg: "Comment posted sucessfully!" })
@@ -186,10 +188,24 @@ router.post('/addComment', async (req, res) => {
 
 router.post('/getComments', async (req, res) => {
     try {
-        const comments = await comment.find({ post: req.body.postId }).populate({ path: "user", model: "user", select: "-following -followers -password -email" }).select("-post")
+        const comments = await comment.find({ post: req.body.postId }).populate({ path: "user", model: "user", select: "-following -followers -password -email" });
         res.status(200).json({ comments })
     } catch (e) {
         res.status(500).json({ 'error': e })
     }
+})
+
+router.post('/addReply',[body('reply').isLength({max:10})],async(req,res)=>{
+const error=validationResult(req);
+if(error.isEmpty()){
+    try {
+        
+    } catch (error) {
+        res.status(500).json({'error':'Some error occured try again!'})
+    }
+}
+else{
+     res.status(500).json({'error':'Reply length is exceeded!'})
+}
 })
 module.exports = router

@@ -83,25 +83,25 @@ function Register() {
                   <form>  
                     <h5 className="fw-normal mb-3 pb-3" style={{letterSpacing: 1+'px'}}>Create your account</h5>
                     <div className="form-outline mb-2">
-                      <label className="form-label" htmlFor="fname" style={{marginRight:29+'vw'}} >First Name</label>
+                      <label className="form-label" htmlhtmlFor="fname" style={{marginRight:29+'vw'}} >First Name</label>
                       <input type="text" id="fname" name='fname' onChange={onchange} className="form-control form-control-lg" />
                     </div>
                     <div className="form-outline mb-2">
-                      <label className="form-label" htmlFor="lname" style={{marginRight:29+'vw'}} >Last Name</label>
+                      <label className="form-label" htmlhtmlFor="lname" style={{marginRight:29+'vw'}} >Last Name</label>
                       <input type="text" id="lname" name='lname' onChange={onchange} className="form-control form-control-lg" />
                     </div>
   
                     <div className="form-outline mb-2">
-                      <label className="form-label"htmlFor="form2Example17" style={{marginRight:28+'vw'}} >Email address</label>
+                      <label className="form-label"htmlhtmlFor="form2Example17" style={{marginRight:28+'vw'}} >Email address</label>
                       <input type="email" id="form2Example17" name='email' onChange={onchange} className="form-control form-control-lg" />
                     </div>
   
                     <div className="form-outline mb-2">
-                    <label className="form-label mr-8" style={{marginRight:30+'vw'}}  htmlFor="form2Example27">Password</label>
+                    <label className="form-label mr-8" style={{marginRight:30+'vw'}}  htmlhtmlFor="form2Example27">Password</label>
                       <input type="password" id="form2Example27" name='password' onChange={onchange} className="form-control form-control-lg"/>
                     </div>
                     <div className="form-outline mb-2">
-                    <label className="form-label mr-8" style={{marginRight:26+'vw'}}  htmlFor="cpassowrd">Confirm Password</label>
+                    <label className="form-label mr-8" style={{marginRight:26+'vw'}}  htmlhtmlFor="cpassowrd">Confirm Password</label>
                       <input type="password" id="cpassword" name='cpassword' onChange={onchange} className="form-control form-control-lg"/>
                     </div>
   

@@ -5,7 +5,6 @@ const router=express.Router()
 const jwt=require('jsonwebtoken');
 const bcrypt=require('bcrypt')
 const secret='dhruvik'
-const suggestedUserModel=require('../models/suggestedUsers')
 router.post('/signup',[
     body('email','enter valid email').isEmail(),
     body('password','enter valid password').isLength({min:8}),
@@ -172,6 +171,13 @@ router.post('/suggestedAllies',async(req,res)=>{
     //filter users from above list that not followed by loged user and include users which followes loged user
     let suggestedAllies=await user.find({$or:[{$and:[{_id:{$in:logedUserAllies}},{_id:{$nin:logedUser.following}},{_id:{$ne:logedUser._id}}]},{$and:[{_id:{$nin:logedUserAllies}},{_id:{$nin:logedUser.following}},{_id:{$ne:logedUser._id}},{_id:{$in:logedUser.followers}}]}]}).select('firstname lastname profilephoto')
     res.status(200).json({suggestedAllies})
+  }
+})
+router.post('/getUserAllies',async(req,res)=>{
+  const logedUser=await user.findById({"_id":req.body.logedUser}).select('followers following')
+  if(logedUser){
+    let logedUserAllies=await user.find({$or:[{_id:{$in:logedUser.followers}},{_id:{$in:logedUser.following}}]}).select('profilephoto firstname lastname');
+    res.status(200).json({logedUserAllies});
   }
 })
 module.exports=router

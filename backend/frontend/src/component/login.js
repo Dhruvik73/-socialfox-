@@ -83,7 +83,7 @@ function Login() {
                         <div className="form-outline mb-4">
                           <label
                             className="form-label"
-                            htmlFor="form2Example17"
+                            htmlhtmlFor="form2Example17"
                           >
                             Email address
                           </label>
@@ -99,7 +99,7 @@ function Login() {
                         <div className="form-outline mb-4">
                           <label
                             className="form-label mr-8"
-                            htmlFor="form2Example27"
+                            htmlhtmlFor="form2Example27"
                           >
                             Password
                           </label>

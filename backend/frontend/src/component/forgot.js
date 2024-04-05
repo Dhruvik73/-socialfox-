@@ -53,11 +53,11 @@ function Forgot() {
       <div className='container' style={{marginTop:100+'px',width:40+'vw'}}>
       <form>
       <div className="form-outline mb-2">
-                      <label className="form-label" htmlFor="email" style={{marginRight:29+'vw'}} >Email</label>
+                      <label className="form-label" htmlhtmlFor="email" style={{marginRight:29+'vw'}} >Email</label>
                       <input type="email" autoComplete='username' id="fname" name='email' onChange={onchange} className="form-control form-control-lg" />
                     </div>
                     <div className="form-outline mb-2">
-                      <label className="form-label" htmlFor="password" style={{marginRight:29+'vw'}} >New Password</label>
+                      <label className="form-label" htmlhtmlFor="password" style={{marginRight:29+'vw'}} >New Password</label>
                       <input autoComplete='current-password' type="password" id="lname" name='password' onChange={onchange} className="form-control form-control-lg" />
                       
                     </div>

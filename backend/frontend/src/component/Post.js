@@ -14,6 +14,7 @@ function Post({ posts, type,Identifier,bgColors,Rank }) {
     }, [])
 
     const getNewImage = (command) => {
+        const postComments=document.getElementsByClassName(`comment-${Identifier}`)
         const image = document.getElementById(`img-${Identifier}`);
         if (command === "Next") {
             if (imgCounter < posts.length - 1) {
@@ -38,6 +39,10 @@ function Post({ posts, type,Identifier,bgColors,Rank }) {
                  document.getElementById(`${Identifier}-postcard-${Rank}`).style.backgroundColor=bgColors[imgCounter-1]
                  }
             }
+        }
+        for (let commentIndex = 0; commentIndex < postComments.length; commentIndex++) {
+            const comment = postComments[commentIndex];
+            comment.style.backgroundColor=document.getElementById(`${Identifier}-postcard-${Rank}`).style.backgroundColor
         }
     }
     return (

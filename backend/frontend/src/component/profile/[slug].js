@@ -128,11 +128,11 @@ function Profile() {
     </div></div>}
     {!update&&<div>
       <div className="form-outline mb-2">
-                      <label className="form-label" htmlFor="fname" style={{marginRight:29+'vw'}} >First Name</label>
+                      <label className="form-label" htmlhtmlFor="fname" style={{marginRight:29+'vw'}} >First Name</label>
                       <input type="text" id="fname" name='fname' onChange={onchange} className="form-control form-control-lg" />
                     </div>
                     <div className="form-outline mb-2">
-                      <label className="form-label" htmlFor="lname" style={{marginRight:29+'vw'}} >Last Name</label>
+                      <label className="form-label" htmlhtmlFor="lname" style={{marginRight:29+'vw'}} >Last Name</label>
                       <input type="text" id="lname" name='lname' onChange={onchange} className="form-control form-control-lg" />
                     </div>
                     <button onClick={edit} style={{height:30+'px',borderColor:'blue'}} className='btn btn-sm'>edit</button>

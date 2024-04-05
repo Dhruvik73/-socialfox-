@@ -11,6 +11,9 @@ const comment = new Schema({
         type: mongoose.Types.ObjectId,
         required:true
     },
+    mentionedAllies:{
+        type:Array
+    },
     comment: {
         type: String
     },
