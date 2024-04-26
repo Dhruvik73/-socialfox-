@@ -18,3 +18,8 @@ export function followMe(id){
     }
 }
 
+
+export function setLastviewedPost(posts,comments,postId,totalPosts,isCloseBtnClicked){
+    return async dispatch=>{dispatch(sendRes({posts,comments,postId,totalPosts,isCloseBtnClicked},'setLastviewedPost'))
+          }
+    }

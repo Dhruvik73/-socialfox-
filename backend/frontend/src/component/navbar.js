@@ -1,32 +1,23 @@
 import React, { useState,useEffect} from 'react'
-import {Link, useLocation} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import {BsPersonCircle,BsPlus} from 'react-icons/bs'
-import {FiLogIn} from 'react-icons/fi'
 import {BiHomeAlt,BiSearchAlt2} from 'react-icons/bi'
 import {FaUserFriends} from 'react-icons/fa'
 import {MdOutlineAddToPhotos} from 'react-icons/md'
 import {AiOutlineLogout} from 'react-icons/ai'
+import logo from '../images/logo.png'
 import '../component_CSS/navbar.css'
+import UserProfileWithName from './UserProfileWithName'; 
+import Showstory from './showstory'
 function Navbar() {
-  const location=useLocation()
-  let slug=location.pathname
-  let a=localStorage.getItem('login')
   let id=localStorage.getItem('id')
   const [user,setuser]=useState({})
-  const [login, setlogin] = useState()
-  const [storyuser,setstoryuser]=useState([])
+  const [storyUser,setStoryUser]=useState([])
+  const [userId,setUserId]=useState(0)
   useEffect(() => {
-    setTimeout(()=>{
-      verify()
-    },100)
-  }, [login])
-  const verify=async()=>{
-    if(a==='1'){
-      setlogin(true)
-      }
-      else{
-        setlogin(false)
-      }
+      getStories()
+  }, [])
+  const getStories=async()=>{
     const body={
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -35,46 +26,36 @@ function Navbar() {
     if(id!=null){
     const res=await fetch('http://localhost:5001/user/fetchuser',body)
     const result=await res.json()
-    setuser(result.myuser)
-    const myres=await fetch('http://localhost:5001/story/getuser',body)
-    const myresult=await myres.json()
-    setstoryuser(myresult.users)
+    setuser(result?.logedUser)
+    setStoryUser(result?.userStories)
     }
   }
   const logout=()=>{
-    setlogin(false)
-    localStorage.removeItem('login')
-    localStorage.removeItem('token')
+    localStorage.clear();
   }
   return (
     <>
     <div className='fixed-top d-flex justify-content-between border-dark border-bottom' style={{width:100+'vw',backgroundColor:'white'}}>
-      {slug==='/'?<div style={{overflow:'hidden',height:70+'px',marginLeft:30+'px'}}><div className='d-flex' style={{height:100+'px',overflowX:'auto',whiteSpace:'nowrap',flexWrap:'nowrap',width:50+'vw',marginTop:10+'px'}}>
-      <div style={{position:'relative'}}><Link to={`/${user._id}`}>
+<div style={{overflow:'hidden',height:70+'px',marginLeft:30+'px'}}><div className='d-flex' style={{height:100+'px',overflowX:'auto',whiteSpace:'nowrap',flexWrap:'nowrap',width:50+'vw',marginTop:10+'px'}}>
+      <div style={{position:'relative'}}>
       <div className='round'>
-      <img className='border border-secondary w-100 h-100' src={user.profilephoto?user.profilephoto:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load"/></div>
-      </Link><Link to={`/story/${user._id}`}><span style={{position: 'absolute',top: 0+'px',right: 0+'px',display:'block',fontSize:17+'px',color:'blue',cursor:'pointer'}}><BsPlus/></span></Link><p style={{fontSize:10+'px'}}>Your Story</p></div>
-      {storyuser.map((k)=>{
-        if(user.following.includes(k._id)){
-          return <div key={k._id} style={{position:'relative',marginLeft:5+'px'}}><Link to={`/${k._id}`}><img className='border border-secondary' src={k.profilephoto?k.profilephoto:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt="not load" style={{height:35+'px',margin:3+'px',borderRadius:50+'%'}}/></Link><p style={{fontSize:10+'px'}}>{k.firstname.length>=5?k.firstname:k.firstname+" "+k.lastname}</p></div>
-        }
-        else{
-          return null
-        }
+      <img data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(id)}} className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load"/></div>
+      <Link to={`/story/${user._id}`}><span style={{position: 'absolute',top: 0+'px',right: 0+'px',display:'block',fontSize:17+'px',color:'blue',cursor:'pointer'}}><BsPlus/></span></Link><p style={{fontSize:10+'px'}}>Your Story</p></div>
+      {storyUser.map((k)=>{
+          return <div key={k.storyUser[0]?._id} style={{position:'relative'}} data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(k.storyUser[0]?._id)}}><UserProfileWithName user={k.storyUser[0]} nameBelow={true}></UserProfileWithName></div>
       })}
       </div>
       </div>
-      :<div></div>}
         <div className='d-flex justify-content-end'>
             <ul style={{marginRight:2+'vw',marginTop:8+'px'}}>
-            {login&&<span style={{fontSize:1.8+'vw',color:'#157ad0f5',marginRight:25+'px'}}><Link to={`allies/profile/${localStorage.getItem('id')}`}><BsPersonCircle/></Link><span onClick={logout} style={{fontSize:1.8+'vw',color:'#157ad0f5',marginLeft:25+'px'}}><Link to={'/login'} style={{textDecoration:'none'}}><AiOutlineLogout/> </Link></span><Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
+            <span style={{fontSize:1.8+'vw',color:'#157ad0f5',marginRight:25+'px'}}><Link to={`/profile/${localStorage.getItem('id')}`}><BsPersonCircle/></Link><span onClick={logout} style={{fontSize:1.8+'vw',color:'#157ad0f5',marginLeft:25+'px'}}><Link to={'/login'} style={{textDecoration:'none'}}><AiOutlineLogout/> </Link></span><Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
                 <Link to={'/allies'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><FaUserFriends/></span></Link>
                 <Link to={'/search'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(35 114 180 / 96%)'}}><BiSearchAlt2/></span></Link>
-                <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link></span>}
-            {!login&&<Link to={'/login'}><span style={{fontSize:1.8+'vw',color:'#157ad0f5',marginRight:25+'px'}}><FiLogIn/></span></Link>}
+                <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link></span>
             </ul>
         </div>
     </div>
+    {userId!=0&&<Showstory userId={userId}></Showstory>}
 </>
   )
 }

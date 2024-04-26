@@ -1,9 +1,11 @@
 const mongoose=require('mongoose')
+const user = require('./user')
 const {Schema}=mongoose
 
 const storyschema=new Schema({
-    userid:{
-        type:String,
+    userId:{
+        type:mongoose.Types.ObjectId,
+        ref:user,
         required:true
     },
     story:{
@@ -15,8 +17,9 @@ const storyschema=new Schema({
         default:Date.now,
         index:{expireAfterSeconds:86400}
     },
-    views:{
-        type:Array
-    }
+    views:[{
+        type:mongoose.Types.ObjectId,
+        ref:user,
+    }]
 })
 module.exports=mongoose.model('story',storyschema)

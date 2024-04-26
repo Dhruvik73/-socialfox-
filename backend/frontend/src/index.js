@@ -7,15 +7,21 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Provider } from 'react-redux';
 import {configureStore}  from "@reduxjs/toolkit";
 import rootReducer from './Reducers/rootReducer';
+import {ErrorBoundary} from 'react-error-boundary'
+import ErrorView from '../src/component/ErrorView'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const store=configureStore({
   reducer:rootReducer
 })
 root.render(
   <React.StrictMode>
+  <ErrorBoundary FallbackComponent={
+    <ErrorView></ErrorView>
+ }>
   <Provider store={store}>
     <App />
     </Provider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

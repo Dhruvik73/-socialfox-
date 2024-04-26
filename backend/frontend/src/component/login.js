@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import logo from '../images/logo.png'
 function Login() {
   const [val, setval] = useState({ email: "", password: "" });
+  const navigation=useNavigate();
   const submit = async () => {
     const url = "http://localhost:5001/user/login";
     const reqbody = {
@@ -26,7 +28,7 @@ function Login() {
         progress: undefined,
       });
       setTimeout(()=>{
-       window.location='/'
+       navigation("/")
       },2000)
     }
     if (result.msg) {
@@ -65,7 +67,7 @@ function Login() {
                 <div className="row g-0">
                   <div className="col-md-6 col-lg-5 d-none d-md-block">
                     <img
-                      src="https://cdn.dribbble.com/users/1192832/screenshots/17542965/media/a25c8f616f42f8934462288c1965b1ed.png?compress=1&resize=450x338&vertical=top"
+                      src={logo}
                       alt="login form"
                       className="img-fluid"
                       style={{ borderRadius: 1 + "rem", height: 73 + "vh" }}
@@ -83,7 +85,7 @@ function Login() {
                         <div className="form-outline mb-4">
                           <label
                             className="form-label"
-                            htmlhtmlFor="form2Example17"
+                            htmlFor="form2Example17"
                           >
                             Email address
                           </label>
@@ -93,13 +95,14 @@ function Login() {
                             name="email"
                             onChange={onchange}
                             className="form-control form-control-lg"
+                            autoComplete="email"
                           />
                         </div>
 
                         <div className="form-outline mb-4">
                           <label
                             className="form-label mr-8"
-                            htmlhtmlFor="form2Example27"
+                            htmlFor="form2Example27"
                           >
                             Password
                           </label>
@@ -109,7 +112,7 @@ function Login() {
                             name="password"
                             onChange={onchange}
                             className="form-control form-control-lg"
-                          />
+                          autoComplete="current-password"/>
                         </div>
 
                         <div className="pt-1 mb-4">
@@ -122,9 +125,8 @@ function Login() {
                           </button>
                         </div>
 
-                        <Link to={'/forgot'}><a className="small text-muted" href="#!">
-                          Forgot password?
-                        </a></Link>
+                        <Link to={'/forgot'}>
+                          Forgot password?</Link>
                         <p
                           className="mb-5 pb-lg-2"
                           style={{ color: "#393f81" }}

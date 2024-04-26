@@ -18,10 +18,18 @@ const reply=new schema({
         type:String,
         required:true
     },
+    mentionedAllies:[{
+        type:mongoose.Types.ObjectId,
+        ref:'user'
+    }],
     repliedAt:{
         type:Date,
         default:Date.now()
-    }
+    },
+    like:[{
+        type:mongoose.Types.ObjectId,
+        ref:'user'
+    }]
 })
 
 module.exports=mongoose.model('Replies',reply);

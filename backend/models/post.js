@@ -12,14 +12,17 @@ const postschema=new Schema({
         type:Array,
         required:true
     },
-    like:{
-        type:Array
-    },
-    dislike:{
-        type:Array
-    },
+    like:[{
+        type:mongoose.Types.ObjectId,
+        ref:'user'
+    }],
+    dislike:[{
+        type:mongoose.Types.ObjectId,
+        ref:'user'
+    }],
     description:{
-        type:String
+        type:String,
+        default:''
     },
      bgColor:{
         type:Array,

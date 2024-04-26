@@ -5,6 +5,7 @@ const post = require('../models/post')
 const getColors = require('get-image-colors')
 const systemPath = require('path')
 const comment = require('../models/comment')
+const reply = require('../models/reply')
 const adjustColor = (color) => {
     // Check if the color is in hex format, if not, return as it is
     if (!/^#[0-9A-F]{6}$/i.test(color)) {
@@ -171,7 +172,9 @@ router.post('/getuserpost', async (req, res) => {
         res.status(500).json({ 'error': e })
     }
 })
-router.post('/addComment', async (req, res) => {
+router.post('/addComment',[body('comment').isLength({max:100,min:10})], async (req, res) => {
+    const error=validationResult(req);
+    if(error.isEmpty()){
     try {
         var userComment = await comment.create({
             user: req.body.userId,
@@ -184,28 +187,163 @@ router.post('/addComment', async (req, res) => {
     } catch (e) {
         res.status(500).json({ 'error': "Some error ocurred try again!" })
     }
+}
+else
+{
+    res.status(500).json({ 'error': "This comment length is not allowed!" })
+}
 })
 
 router.post('/getComments', async (req, res) => {
     try {
-        const comments = await comment.find({ post: req.body.postId }).populate({ path: "user", model: "user", select: "-following -followers -password -email" });
+        // const comments = await comment.find({ post: req.body.postId }).populate({ path: "user", model: "user", select: "-following -followers -password -email" }).limit(10);
+        const comments = await comment.aggregate([
+            { $match: { post: req.body.postId } },
+            { $lookup: { from: 'users', foreignField: '_id', localField: 'user', as: 'user' } },
+            { 
+                $lookup: { 
+                    from: 'users', 
+                    let: { mentionedAllies: '$mentionedAllies' }, 
+                    pipeline: [
+                        { 
+                            $match: { 
+                                $expr: { $in: ['$_id', '$$mentionedAllies'] } 
+                            } 
+                        },
+                        {$limit:3}
+                    ], 
+                    as: 'mentionedallies' 
+                } 
+            },
+            {
+                $lookup:
+                {
+                    from: 'replies',
+                    foreignField: 'comment',
+                    localField: '_id',
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "user",
+                                foreignField: "_id",
+                                as: "user"
+                            }
+                        },
+                        {$lookup:{
+                            from:"users",
+                            let:{"mentionedAllies":"$mentionedAllies"},
+                            pipeline:[{$match:{$expr:{$in:["$_id","$$mentionedAllies"]}}},{$limit:5}],
+                            as:"replyMentionedAllies"
+                        }},
+                        {$limit:2}
+                    ],
+                    as: 'replies'
+                }
+            },
+            {
+                //remove other columns
+                $project: {
+                    "user.email": 0,
+                    "user.following": 0,
+                    "user.followers": 0,
+                    "user.password": 0,
+                    "replies.user.email": 0,
+                    "replies.user.following": 0,
+                    "replies.user.followers": 0,
+                    "replies.user.password": 0,
+                    "replies.mentionedAllies": 0,
+                    "replies.replyMentionedAllies.email": 0,
+                    "replies.replyMentionedAllies.following": 0,
+                    "replies.replyMentionedAllies.followers": 0,
+                    "replies.replyMentionedAllies.password": 0,
+                    "replies.replyMentionedAllies.firstname": 0,
+                    "replies.replyMentionedAllies.lastname": 0,
+                    "mentionedAllies":0,
+                    "mentionedallies.email": 0,
+                    "mentionedallies.following": 0,
+                    "mentionedallies.followers": 0,
+                    "mentionedallies.password": 0,
+                    "mentionedallies.firstname": 0,
+                    "mentionedallies.lastname": 0
+                }
+            },
+            {$limit:10}
+        ])
         res.status(200).json({ comments })
     } catch (e) {
         res.status(500).json({ 'error': e })
     }
 })
 
-router.post('/addReply',[body('reply').isLength({max:10})],async(req,res)=>{
+router.post('/addReply',[body('reply').isLength({max:100,min:10})],async(req,res)=>{
 const error=validationResult(req);
 if(error.isEmpty()){
     try {
-        
+        const userReply=new reply({
+         comment:req.body.commentId,
+         user:req.body.userId,
+         userReply:req.body.reply,
+         mentionedAllies:req.body.mentionedAllies
+        })
+        await userReply.save();
+        res.status(200).json({'msg':'You replied sucessfully!'})
     } catch (error) {
         res.status(500).json({'error':'Some error occured try again!'})
     }
 }
 else{
-     res.status(500).json({'error':'Reply length is exceeded!'})
+     res.status(500).json({'error':'This reply length is not allowed!'})
 }
+})
+
+router.post('/commentlike', async (req, res) => {
+    try {
+        var commentLikes = (await comment.findById(req.body.id).select('like'))?.like;
+        if (req.body.type == "like") {
+            if (!commentLikes.includes(req.body.userId)) {
+                commentLikes.push(req.body.userId)
+                await comment.updateOne({ _id: req.body.id }, { like: commentLikes })
+                res.status(200).json({ count: commentLikes.length })
+            }
+            else {
+                res.status(200).json({ 'error': 'You already liked this comment!' })
+            }
+        }
+        else if (req.body.type === "replyLike") {
+            var replyLikes = (await reply.findById(req.body.id).select('like')).like;
+            if (!replyLikes.includes(req.body.userId)) {
+                replyLikes.push(req.body.userId)
+                await reply.updateOne({ _id: req.body.id }, { like: replyLikes })
+                res.status(200).json({ count: replyLikes.length })
+            }
+            else {
+                res.status(200).json({ 'error': 'You already liked this reply!' })
+            }
+        }
+        else if(req.body.type === "removeReplyLike"){
+            var replyLikes = (await reply.findById(req.body.id).select('like')).like;
+            if (replyLikes.includes(req.body.userId)) {
+                replyLikes.splice(replyLikes.indexOf(req.body.userId), 1)
+                await reply.updateOne({ _id: req.body.id }, { like: replyLikes })
+                res.status(200).json({ count: replyLikes.length })
+            }
+            else {
+                res.status(200).json({ 'error': 'You have not liked this reply!' })
+            }
+        }
+        else{
+            if (commentLikes.includes(req.body.userId)) {
+                commentLikes.splice(commentLikes.indexOf(req.body.userId), 1)
+                await comment.updateOne({ _id: req.body.id }, { like: commentLikes })
+                res.status(200).json({ count: commentLikes.length })
+            }
+            else {
+                res.status(200).json({ 'error': 'You have not liked this comment!' })
+            }
+        }
+    } catch (e) {
+        res.status(500).json({ 'error': "Some error occured try again!" })
+    }
 })
 module.exports = router

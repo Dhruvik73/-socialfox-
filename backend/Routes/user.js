@@ -3,7 +3,8 @@ const { body, validationResult } = require('express-validator')
 const user=require('../models/user')
 const router=express.Router()
 const jwt=require('jsonwebtoken');
-const bcrypt=require('bcrypt')
+const bcrypt=require('bcrypt');
+const story = require('../models/story');
 const secret='dhruvik'
 router.post('/signup',[
     body('email','enter valid email').isEmail(),
@@ -93,8 +94,18 @@ router.post('/profile',async(req,res)=>{
   res.status(200).json({myuser})
 })
 router.post('/fetchuser',async(req,res)=>{
-  const myuser=await user.findById({"_id":req.body.id})
-  res.status(200).json({myuser})
+  // try {
+    const logedUser=await user.findById(req.body.id).select('-email -password');
+    const userStories = await story.aggregate([
+      { $match: { $expr: { $in: ['$userId',logedUser?.following] } } }, 
+      { $lookup: { from: 'users', localField: 'userId', foreignField: '_id', as: 'storyUser' } }, 
+      {$group:{_id:'$userId',storyUser:{$first:'$storyUser'}}},
+      { $project: {'storyUser.email':0,'storyUser.password':0,'storyUser.followers':0,'storyUser.following':0,story:0} }
+    ])
+    res.status(200).json({logedUser,userStories})
+  // } catch (error) {
+  //   res.status(500).json({error:"Some error occured try again!"})
+  // }
 })
 router.post('/allies',async(req,res)=>{
    const myuser=await user.updateOne({'_id':req.body.id},{'following':req.body.detail})

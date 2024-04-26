@@ -2,9 +2,10 @@ const express=require('express')
 const router=express.Router()
 const story=require('../models/story')
 const user=require('../models/user')
+const { Types } = require('mongoose')
 router.post('/add',async(req,res)=>{
     const mystory=await story.create({
-        userid:req.body.id,
+        userId:req.body.id,
         story:req.body.story
     })
     if(mystory){
@@ -15,9 +16,14 @@ router.post('/add',async(req,res)=>{
     }
 })
 router.post('/getstory',async(req,res)=>{
-    const mystory=await story.find({userid:req.body.id})
-    if(mystory){
-        res.status(200).json({mystory})
+    const userStories = await story.aggregate([{ $match: { userId: Types.ObjectId(req.body.id) } },
+        {$limit:1},
+        { $lookup: { from: 'users', localField: 'userId', foreignField: '_id', as: 'user' } },
+        { $lookup: { from: 'users', localField: 'views', foreignField: '_id', as: 'views' } },
+        { $project: { 'views.email': 0, 'views.password': 0, 'views.following': 0, 'views.followers': 0, 'user.email': 0, 'user.password': 0, 'user.following': 0, 'user.followers': 0 } }
+]);
+    if(userStories){
+        res.status(200).json({userStories})
     }
     else{
         res.status(500).json({error:'internel server error'})

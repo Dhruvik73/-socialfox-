@@ -8,21 +8,25 @@ const comment = new Schema({
         ref: user
     },
     post: {
-        type: mongoose.Types.ObjectId,
+        type: String,
         required:true
     },
-    mentionedAllies:{
-        type:Array
-    },
+    mentionedAllies:[{
+        type: mongoose.Types.ObjectId,
+        ref: 'user' // This references the User model, replace 'User' with your actual model name
+      }],
     comment: {
-        type: String
+        type: String,
+        default:''
     },
-    like: {
-        type: Array
-    },
-    dislike: {
-        type: Array
-    },
+    like: [{
+        type:mongoose.Types.ObjectId,
+        ref:'user'
+    }],
+    dislike: [{
+        type:mongoose.Types.ObjectId,
+        ref:'user'
+    }],
     insertDate: {
         type: Date,
         required: true,

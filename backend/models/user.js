@@ -19,14 +19,15 @@ const usermodel=new Schema({
         required:true
     },
     profilephoto:{
-        type:String
+        type:String,
+        default:''
     },
-    followers:{
-        type:Array
-    },
-    following:{
-        type:Array
-    }
+    followers:[{
+        type:mongoose.Types.ObjectId
+    }],
+    following:[{
+        type:mongoose.Types.ObjectId
+    }]
 })
 
 module.exports=mongoose.model('user',usermodel)

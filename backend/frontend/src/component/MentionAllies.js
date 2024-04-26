@@ -3,7 +3,7 @@ import UserProfileWithName from './UserProfileWithName';
 
 const MentionAllies = forwardRef(({ userRequested }, ref) => {
     const logedUser = localStorage.getItem('id') ? localStorage.getItem('id') : 0;
-    const mentionedAllies = [];
+    let mentionedAllies = [];
     const [Allies, setAllies] = useState([])
     useEffect(() => {
         if (userRequested) {
@@ -37,11 +37,18 @@ const MentionAllies = forwardRef(({ userRequested }, ref) => {
     useImperativeHandle(ref, () => ({
         getMentionedAllies: () => {
             return mentionedAllies;
+        },
+        clearMentionedAllies:()=>{
+            mentionedAllies=[];
+            var mentionButtons=document.getElementsByClassName('mn-btn')
+            for (let index = 0; index < mentionButtons.length; index++) {
+                mentionButtons[index].innerText='Mention';
+            }
         }
     }))
     return (
         <div>{Allies.map((k) => {
-            return <div key={k._id} className='d-flex justify-content-between align-items-center'><UserProfileWithName user={k}></UserProfileWithName><button id={k._id} onClick={() => { mentionAllie(k._id) }} className='btn btn-outline-info btn-sm'>Mention</button></div>
+            return <div key={k._id} className='d-flex justify-content-between align-items-center'><UserProfileWithName user={k}></UserProfileWithName><button id={k._id} onClick={() => { mentionAllie(k._id) }} className='btn btn-outline-info btn-sm mn-btn'>Mention</button></div>
         })}</div>
     )
 })

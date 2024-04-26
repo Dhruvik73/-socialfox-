@@ -29,8 +29,8 @@ function Allies() {
     }
     const myres= await fetch('http://localhost:5001/user/fetchuser',body)
     const myresult=await myres.json()
-    setfollowing(myresult.myuser.following)
-    setfollower(myresult.myuser.followers)
+    setfollowing(myresult.logedUser?.following)
+    setfollower(myresult.logedUser?.followers)
     const mybody={
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -39,15 +39,15 @@ function Allies() {
     const res= await fetch('http://localhost:5001/user/allusers',mybody)
     const result=await res.json()
     if(result.users){
-      if(myresult.myuser.following.length>0){
+      if(myresult.logedUser?.following.length>0){
         let allies=[]
         let notallie=result.users
-        for (let index = 0; index < myresult.myuser.following.length; index++) {
-          allies.push(result.users.filter(user=>user._id==myresult.myuser.following[index])[0])
+        for (let index = 0; index < myresult.logedUser?.following.length; index++) {
+          allies.push(result.users.filter(user=>user._id==myresult.logedUser?.following[index])[0])
         }
         setfriend(allies)
-        for (let index = 0; index < myresult.myuser.following.length; index++) {
-          notallie=notallie.filter(user=>user._id!=myresult.myuser.following[index])
+        for (let index = 0; index < myresult.logedUser?.following.length; index++) {
+          notallie=notallie.filter(user=>user._id!=myresult.logedUser?.following[index])
         }
         setval(notallie)
       }

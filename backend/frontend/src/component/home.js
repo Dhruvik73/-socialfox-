@@ -1,15 +1,19 @@
-import React, { useState,useEffect, useDeferredValue, useTransition } from 'react'
+import React, { useState,useEffect, useDeferredValue } from 'react'
 import {AiOutlineLike,AiFillLike,AiOutlineDislike,AiFillDislike} from 'react-icons/ai'
 import {FaComment} from 'react-icons/fa'
 import {Link} from 'react-router-dom'
 import InfiniteScroll from "react-infinite-scroll-component";
 import '../component_CSS/home.css'
+import { setLastviewedPost } from '../Actions/userIntrection';
 import ReactDOMServer from 'react-dom/server';
 import SuggestedAllies from './suggestedAllies';
 import Post from './Post';
 import Comment from './Comment';
 import UserProfileWithName from './UserProfileWithName';
+import { useDispatch, useSelector } from 'react-redux';
 function Home() {
+  const dispatch=useDispatch();
+  const state=useSelector(state=>state.userIntrection.payload)
   const [page,setpage]=useState(5);
   const [post,setpost]=useState([]);
   const userId=localStorage.getItem("id");
@@ -19,40 +23,11 @@ function Home() {
   const [bgColor,setBgColor]=useState('');
   const defferedComments=useDeferredValue(comments);
   useEffect(() => {
-    verify()
-    fetchpost()
+    fetchpost();
+    checkUserLastVisitedPost()
   },[])
-  const verify=async()=>{
-    if(localStorage.getItem('token')){
-      const mybody={
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({'token':localStorage.getItem('token')})
-      }
-      const res= await fetch('http://localhost:5001/user/verify',mybody)
-      const result=await res.json()
-      if(result.error){
-        localStorage.setItem('login',2)
-        window.location='/login'
-      }
-      if (result.myuser){
-        localStorage.setItem('login',1)
-      }
-      if(result.login){
-        localStorage.setItem('login',0)
-        window.location='/register'
-      }
-      if(result.host){
-        localStorage.setItem('login',2)
-        window.location='/login'
-      }
-    }
-    else{
-      window.location='/login'
-    }
-    
-  }
   const fetchpost=async()=>{
+    if(!(state.posts)){
     const userId=localStorage.getItem('id')
     const mybody={
       method:"POST",
@@ -64,9 +39,12 @@ function Home() {
     if(result.allpost){
      setpost(result.allpost)
      setcount(result.totalPost)
+     dispatch(setLastviewedPost(result.allpost,[],0,result.totalPost,false))
     }
   }
+  }
   const fetchmoredata=async()=>{
+    if((state.posts && state.posts.length < state.totalPosts)){
     setpage(page+5)
     const mybody={
       method:"POST",
@@ -77,7 +55,9 @@ function Home() {
     const result=await res.json()
     if(result.allpost){
      setpost(post.concat(result.allpost))
+     dispatch(setLastviewedPost(post.concat(result.allpost),[],0,count,false))
     }
+  }
   }
   const addlike=async(id)=>{
         const body={
@@ -202,8 +182,25 @@ function Home() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({postId:currentPostId,userId:userId})
     }
-    await fetch('http://localhost:5001/post/getComments',body).then((res)=>res.json()).then((res)=>setComments(res.comments))
+    await fetch('http://localhost:5001/post/getComments',body).then((res)=>res.json()).then((res)=>{setComments(res.comments);dispatch(setLastviewedPost(post,res.comments,currentPostId,count,false))})
   }
+  }
+
+  const checkUserLastVisitedPost=()=>{
+    if((state.posts && state.comments)){
+        setpost(state.posts);
+        setBgColor(state?.posts[0]?.bgColor[0]);
+        setComments(state.comments);
+        setPostId(state.postId);
+        const currentPage=Math.floor(state.posts.length/5)*5;
+        setpage(currentPage);
+        if(state.comments.length>0 && !state.isCloseBtnClicked){
+        const btn=document.getElementById('openCommentModalBTN');
+        if(btn){
+        btn.click();
+        }
+      }
+    }
   }
   return (
     <div className='container'>
@@ -232,12 +229,12 @@ function Home() {
                       <span id={`likeCount-${k._id}`}>{k.like.length} </span> Likes <span id={`dislikeCount-${k._id}`}>{k.dislike.length} </span> disLikes {k.commentsCount} comments <br></br><button type="button" className="btn btn-info btn-sm mt-1" data-toggle="modal" onClick={()=>{getComments(k._id,k.bgColor[0])}} data-target="#commentModal">
   Show All
 </button>
-<Comment postId={postId} comments={defferedComments} bgColor={bgColor}></Comment>
                     </div>
                     </div>
                   </div>
                 </div>
             })}
+            <Comment postId={postId} comments={defferedComments} bgColor={bgColor} setComments={setComments}></Comment>
           </div>
           <div className='col-lg-4 col-md-6 col-sm-8 position-sticky d-flex align-items-center flex-column' style={{ top:100+'px'}}>
             <p style={{ color: 'gray' }}>Make More Allies 👍👍🤞 <Link to={'/allies'} style={{ color: 'blue', cursor: 'pointer', textDecoration: "none" }}>See All</Link></p>
@@ -245,6 +242,7 @@ function Home() {
           </div>
         </div>
         </InfiniteScroll>
+        <input type="hidden" className="btn btn-info btn-sm mt-1" id='openCommentModalBTN' data-toggle="modal" data-target="#commentModal"></input>
         </div>
   )
 }

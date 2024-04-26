@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import '../../component_CSS/profile.css'
+import logo from '../../images/logo.png'
 import Post from '../Post';
 function Profile() {
   const [profile, setprofile] = useState(true)
@@ -14,7 +15,7 @@ function Profile() {
   const [post,setpost]=useState([])
   let[myurl,setmyurl]=useState()
     const location=useLocation()
-    const id=location.pathname.slice(16)
+    const id=location.pathname.slice(9)
     useEffect(() => {
       reload()
     }, [profile,update,id])
@@ -37,7 +38,7 @@ function Profile() {
     const add=()=>{
       setprofile(false)
       const reader=new FileReader()
-      const image=document.getElementById('image').files[0]
+      const image=document.getElementById('image')?.files[0]
       reader.readAsDataURL(image)
       reader.onload=(e)=>{
        setmyurl(e.target.result)
@@ -57,7 +58,7 @@ function Profile() {
     const upload=async()=>{
       setprofile(false)
       const reader=new FileReader()
-      const image=document.getElementById('image').files[0]
+      const image=document.getElementById('image')?.files[0]
       reader.readAsDataURL(image)
       reader.onload=(e)=>{
        myurl=e.target.result
@@ -92,8 +93,8 @@ function Profile() {
       }
       const res=await fetch('http://localhost:5001/user/fetchuser',mybody)
       const result=await res.json()
-      seturl(result.myuser.profilephoto)
-      setuser(JSON.parse(JSON.stringify(result.myuser)))
+      seturl(result?.logedUser?.profilephoto)
+      setuser(JSON.parse(JSON.stringify(result?.logedUser)))
     }
   return (
     <div className='container'>
@@ -109,7 +110,7 @@ function Profile() {
             pauseOnHover
           />
        {profile&&update&&<div><div className="d-flex justify-content-around border-primary border-bottom align-items-center">
-            <div className='roundProfile col-lg-5 col-md-5'>{id==localStorage.getItem('id')?<img className='w-100 h-100' id='display' onClick={upload} src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>:<img className='w-100 h-100' id='display' src={url?url:'https://booleanstrings.com/wp-content/uploads/2021/10/profile-picture-circle-hd.png'} alt='not found'/>}</div>
+            <div className='roundProfile col-lg-5 col-md-5'>{id==localStorage.getItem('id')?<img className='w-100 h-100' id='display' onClick={upload} src={url?url:logo} alt='not found'/>:<img className='w-100 h-100' id='display' src={url?url:logo} alt='not found'/>}</div>
 
             <div className='col-lg-5 col-md-5'><p>{user.firstname+' '+user.lastname}</p>
             <div className='d-flex justify-content-between'><p>{post.length} Posts </p><Link to={'/allies'}>{user.length!==0?user.followers.length>=1000?user.followers.length/1000+' k':'':''}{user.length!==0?user.followers.length>=1000000?user.followers.length/1000000+' m':'':''}{user.length!==0?user.followers.length<1000?user.followers.length:'':''}  Followers</Link><Link to={'/allies'}>{user.length!==0?user.following.length>=1000?user.following.length/1000+' k':'':''}{user.length!==0?user.following.length>=1000000?user.following.length/1000000+' m':'':''}{user.length!==0?user.following.length<1000?user.following.length:'':''}  Following</Link></div>
