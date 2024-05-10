@@ -8,6 +8,10 @@ const storyschema=new Schema({
         ref:user,
         required:true
     },
+    mediaType:{
+        type:String,
+        required:true
+    },
     story:{
         type:Array,
         required:true

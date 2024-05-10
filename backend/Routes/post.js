@@ -51,7 +51,8 @@ router.post('/add', async (req, res) => {
         for (const post of req.body.post) {
             const matches = post.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
             if (!matches || matches.length !== 3) {
-                res.status(500).json({ 'error': "Upload valid file" })
+                res.status(500).json({ 'error': "Upload valid file" });
+                return;
             }
 
             const imageType = matches[1];

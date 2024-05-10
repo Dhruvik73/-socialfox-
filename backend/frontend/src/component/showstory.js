@@ -2,9 +2,11 @@ import React, { useEffect ,useState} from 'react'
 import {FcNext,FcPrevious} from 'react-icons/fc'
 import UserProfileWithName from './UserProfileWithName'
 import '../component_CSS/story.css'
+import StoryCard from './StoryCard';
 function Showstory({userId}) {
     const id=userId;
     const [story, setStory] = useState([]);
+    const [totalStories, SetTotalStories] = useState(0);
     useEffect(() => {
         getallstories()
     },[userId])
@@ -16,7 +18,12 @@ function Showstory({userId}) {
       }
       const res=await fetch('http://localhost:5001/story/getstory',body)
       const result=await res.json();
-      setStory(result?.userStories)
+      setStory(result?.userStories);
+      SetTotalStories(result?.totalStories);
+    }
+    const stopVideoOnClose=()=>{
+      const videoPlayer=document.getElementById('video');
+      videoPlayer?.pause();
     }
   return (
     <div className="modal fade" id="storyModal" data-backdrop="static" tabIndex="-1" aria-hidden="true">
@@ -26,17 +33,13 @@ function Showstory({userId}) {
           <h5 className="modal-title" id="exampleModalLongTitle">Stories</h5>
         </div>
         <div className="modal-body">
-        <div className='d-flex justify-content-center'>
-     {story.length>0&&<div className='d-flex justify-content-center'>
-            {story.map((k)=>{
-                return  <video key={k._id} id='video' className='storyVideoPlayer' autoPlay='autoPlay' src={k.story[0]}></video>
-            })}
-            
-      </div>}
+        <div className='d-flex justify-content-center w-100'>
+     <div className='d-flex justify-content-center w-50'>{story.length>0&&<StoryCard story={story} totalStories={totalStories}></StoryCard>}
+      </div>
       </div>
       </div>
       <div className="modal-footer">
-              <button className="btn btn-outline-info btn-sm" data-dismiss="modal">Close</button>
+              <button className="btn btn-outline-info btn-sm" data-dismiss="modal" onClick={stopVideoOnClose}>Close</button>
             </div>
       </div>
     </div>

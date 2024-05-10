@@ -1,3 +1,25 @@
 .storyVideoPlayer{
     height:500px;
+    width: 290px;
+}
+.storyPreview{
+    width: 290px;
+}
+.playPauseBtn{
+    font-size: 40px;
+    color: white;
+    position:absolute;
+    left: 48%;
+    visibility: hidden;
+    opacity: 0;
+}
+.playPauseBtnHide{
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.playPauseBtnShow{
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s;
 }
