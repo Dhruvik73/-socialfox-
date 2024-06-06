@@ -10,10 +10,11 @@ import '../component_CSS/navbar.css'
 import UserProfileWithName from './UserProfileWithName'; 
 import Showstory from './showstory'
 function Navbar() {
-  let id=localStorage.getItem('id')
+  let id=localStorage.getItem('id')?localStorage.getItem('id'):0
   const [user,setuser]=useState({})
   const [storyUser,setStoryUser]=useState([])
   const [userId,setUserId]=useState(0)
+  const [logedUserStoryCount,setLogedUserStoryCount]=useState(0)
   useEffect(() => {
       getStories()
   }, [])
@@ -28,6 +29,7 @@ function Navbar() {
     const result=await res.json()
     setuser(result?.logedUser)
     setStoryUser(result?.userStories)
+    setLogedUserStoryCount(result?.logedUserStoryCount)
     }
   }
   const logout=()=>{
@@ -39,8 +41,9 @@ function Navbar() {
 <div style={{overflow:'hidden',height:70+'px',marginLeft:30+'px'}}><div className='d-flex' style={{height:100+'px',overflowX:'auto',whiteSpace:'nowrap',flexWrap:'nowrap',width:50+'vw',marginTop:10+'px'}}>
       <div style={{position:'relative'}}>
       <div className='round'>
-      <img data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(id)}} className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load"/></div>
-      <Link to={`/story/${user._id}`}><span style={{position: 'absolute',top: 0+'px',right: 0+'px',display:'block',fontSize:17+'px',color:'blue',cursor:'pointer'}}><BsPlus/></span></Link><p style={{fontSize:10+'px'}}>Your Story</p></div>
+      {logedUserStoryCount>0?<img data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(id)}} className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load"/>:<Link to={`/story/${user._id}`}><img className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load" onClick={()=>{setUserId(0)}}/></Link>}
+      </div>
+      <Link to={`/story/${user._id}`}><span style={{position: 'absolute',top: 0+'px',right: 0+'px',display:'block',fontSize:17+'px',color:'blue',cursor:'pointer'}} onClick={()=>{setUserId(0)}}><BsPlus/></span></Link><p style={{fontSize:10+'px'}}>Your Story</p></div>
       {storyUser.map((k)=>{
           return <div key={k.storyUser[0]?._id} style={{position:'relative'}} data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(k.storyUser[0]?._id)}}><UserProfileWithName user={k.storyUser[0]} nameBelow={true}></UserProfileWithName></div>
       })}
@@ -48,7 +51,7 @@ function Navbar() {
       </div>
         <div className='d-flex justify-content-end'>
             <ul style={{marginRight:2+'vw',marginTop:8+'px'}}>
-            <span style={{fontSize:1.8+'vw',color:'#157ad0f5',marginRight:25+'px'}}><Link to={`/profile/${localStorage.getItem('id')}`}><BsPersonCircle/></Link><span onClick={logout} style={{fontSize:1.8+'vw',color:'#157ad0f5',marginLeft:25+'px'}}><Link to={'/login'} style={{textDecoration:'none'}}><AiOutlineLogout/> </Link></span><Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
+            <span style={{fontSize:1.8+'vw',color:'#157ad0f5',marginRight:25+'px'}}><Link to={`/profile/${localStorage.getItem('id')?localStorage.getItem('id'):0}`}><BsPersonCircle/></Link><span onClick={logout} style={{fontSize:1.8+'vw',color:'#157ad0f5',marginLeft:25+'px'}}><Link to={'/login'} style={{textDecoration:'none'}}><AiOutlineLogout/> </Link></span><Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
                 <Link to={'/allies'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><FaUserFriends/></span></Link>
                 <Link to={'/search'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(35 114 180 / 96%)'}}><BiSearchAlt2/></span></Link>
                 <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link></span>

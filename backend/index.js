@@ -2,8 +2,12 @@ const connection=require('./db')
 const express=require('express')
 const app=express()
 const cors=require('cors')
+const deleteVideoOfDeletedStories = require('./storyDeleter')
 const port=process.env.PORT || 5001
-connection()
+
+connection().then(()=>{
+    deleteVideoOfDeletedStories();
+});
 app.use(cors())
 app.use(express.json({limit:'50mb'}))
 //app.use(express.urlencoded({limit:'50mb'}))
@@ -15,4 +19,5 @@ if(process.env.NODE_ENV=="production"){
 }
 app.listen(port,()=>{
 })
+
 

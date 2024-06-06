@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Post from './Post';
 function Addpost() {
     const [des,setdes]=useState('')
-    let id=localStorage.getItem('id')
+    let id=localStorage.getItem('id')?localStorage.getItem('id'):0
     const [userPosts,setUserPosts]=useState([])
     const getUserPosts=async ()=>{
       const image=document.getElementById('image').files

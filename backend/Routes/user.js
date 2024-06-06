@@ -102,7 +102,8 @@ router.post('/fetchuser',async(req,res)=>{
       {$group:{_id:'$userId',storyUser:{$first:'$storyUser'}}},
       { $project: {'storyUser.email':0,'storyUser.password':0,'storyUser.followers':0,'storyUser.following':0,story:0} }
     ])
-    res.status(200).json({logedUser,userStories})
+    const logedUserStoryCount=(await story.find({userId:req.body.id}))?.length;
+    res.status(200).json({logedUser,userStories,logedUserStoryCount})
   // } catch (error) {
   //   res.status(500).json({error:"Some error occured try again!"})
   // }

@@ -110,7 +110,7 @@ function Profile() {
             pauseOnHover
           />
        {profile&&update&&<div><div className="d-flex justify-content-around border-primary border-bottom align-items-center">
-            <div className='roundProfile col-lg-5 col-md-5'>{id==localStorage.getItem('id')?<img className='w-100 h-100' id='display' onClick={upload} src={url?url:logo} alt='not found'/>:<img className='w-100 h-100' id='display' src={url?url:logo} alt='not found'/>}</div>
+            <div className='roundProfile col-lg-5 col-md-5'>{id===localStorage.getItem('id')?<img className='w-100 h-100' id='display' onClick={upload} src={url?url:logo} alt='not found'/>:<img className='w-100 h-100' id='display' src={url?url:logo} alt='not found'/>}</div>
 
             <div className='col-lg-5 col-md-5'><p>{user.firstname+' '+user.lastname}</p>
             <div className='d-flex justify-content-between'><p>{post.length} Posts </p><Link to={'/allies'}>{user.length!==0?user.followers.length>=1000?user.followers.length/1000+' k':'':''}{user.length!==0?user.followers.length>=1000000?user.followers.length/1000000+' m':'':''}{user.length!==0?user.followers.length<1000?user.followers.length:'':''}  Followers</Link><Link to={'/allies'}>{user.length!==0?user.following.length>=1000?user.following.length/1000+' k':'':''}{user.length!==0?user.following.length>=1000000?user.following.length/1000000+' m':'':''}{user.length!==0?user.following.length<1000?user.following.length:'':''}  Following</Link></div>
@@ -119,7 +119,7 @@ function Profile() {
         </div>
         <p>All Posts</p><div className='d-flex flex-column align-items-center'>
         {post.map((k,index)=>{
-          return <div className='w-50 border rounded mt-5 postcard d-flex align-items-center' key={k._id} id={`${k._id}-postcard-${index}`} style={{backgroundColor:k.bgColor[0],height:350+'px'}}><div className='w-100 h-80'><Post posts={k.post} type={"Home"} Identifier={k._id} bgColors={k.bgColor} Rank={index}></Post></div></div>
+          return <div className='col-lg-4 col-md-6 col-sm-8 col-9 border rounded mt-5 postcard d-flex align-items-center' key={k._id} id={`${k._id}-postcard-${index}`} style={{backgroundColor:k.bgColor[0],height:350+'px'}}><div className='w-100 h-80'><Post posts={k.post} type={"Home"} Identifier={k._id} bgColors={k.bgColor} Rank={index}></Post></div></div>
         })}</div></div>}
                 {!profile&&<div><div className='container'>
     <div className=" d-flex upload border-bottom border-primary">

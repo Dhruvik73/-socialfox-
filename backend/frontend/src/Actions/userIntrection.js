@@ -10,7 +10,7 @@ export function followMe(id){
         const mybody = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ "logedUserId": localStorage.getItem('id'), 'toBeFollowed': id })
+            body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeFollowed': id })
           }
           await fetch('http://localhost:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
             dispatch(sendRes(res,'followMe'))

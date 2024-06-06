@@ -28,7 +28,7 @@ function Home() {
   },[])
   const fetchpost=async()=>{
     if(!(state.posts)){
-    const userId=localStorage.getItem('id')
+    const userId=localStorage.getItem('id')?localStorage.getItem('id'):0
     const mybody={
       method:"POST",
       headers:{'Content-Type':'application/json'},
@@ -63,7 +63,7 @@ function Home() {
         const body={
           method:"POST",
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({id:id,userId:localStorage.getItem('id'),type:"like"})
+          body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"like"})
         }
         await fetch('http://localhost:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
@@ -76,7 +76,7 @@ function Home() {
         const body={
           method:"POST",
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({id:id,userId:localStorage.getItem('id'),type:"fillLike"})
+          body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"fillLike"})
         }
         await fetch('http://localhost:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
@@ -89,7 +89,7 @@ function Home() {
         const body={
           method:"POST",
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({id:id,userId:localStorage.getItem('id'),type:"dislike"})
+          body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"dislike"})
         }
         await fetch('http://localhost:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
@@ -101,7 +101,7 @@ function Home() {
         const body={
           method:"POST",
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({id:id,userId:localStorage.getItem('id'),type:"fillDislike"})
+          body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"fillDislike"})
         }
         await fetch('http://localhost:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
@@ -221,10 +221,10 @@ function Home() {
                     <div className='h-75 w-100'>
                       <Post posts={k.post} type={"Home"} Identifier={k._id} bgColors={k.bgColor} Rank={index}></Post>
                       </div>
-                      <div className='w-75 h-25' id={`likeBtns-${k._id}`}>{k.like.includes(localStorage.getItem('id')) ? <span className='likebtns' id={`fillLike-${k._id}`} onClick={() => { removelike(k._id) }}><AiFillLike/></span> : '' }
-                      {!k.like.includes(localStorage.getItem('id')) ? <span className='likebtns' id={`like-${k._id}`} onClick={() => { addlike(k._id) }}><AiOutlineLike /></span> : '' }
-                      {k.dislike.includes(localStorage.getItem('id')) ? <span className='likebtns ms-3' id={`fillDislike-${k._id}`} onClick={() => { removedislike(k._id) }}><AiFillDislike /></span> : '' }
-                      {!k.dislike.includes(localStorage.getItem('id')) ? <span className='likebtns ms-3' id={`dislike-${k._id}`} onClick={() => { adddislike(k._id) }}><AiOutlineDislike /></span> : '' }
+                      <div className='w-75 h-25' id={`likeBtns-${k._id}`}>{k.like.includes(localStorage.getItem('id')?localStorage.getItem('id'):0) ? <span className='likebtns' id={`fillLike-${k._id}`} onClick={() => { removelike(k._id) }}><AiFillLike/></span> : '' }
+                      {!k.like.includes(localStorage.getItem('id')?localStorage.getItem('id'):0) ? <span className='likebtns' id={`like-${k._id}`} onClick={() => { addlike(k._id) }}><AiOutlineLike /></span> : '' }
+                      {k.dislike.includes(localStorage.getItem('id')?localStorage.getItem('id'):0) ? <span className='likebtns ms-3' id={`fillDislike-${k._id}`} onClick={() => { removedislike(k._id) }}><AiFillDislike /></span> : '' }
+                      {!k.dislike.includes(localStorage.getItem('id')?localStorage.getItem('id'):0) ? <span className='likebtns ms-3' id={`dislike-${k._id}`} onClick={() => { adddislike(k._id) }}><AiOutlineDislike /></span> : '' }
                       <span className='likebtns ms-3'><Link to={`/comment/${k._id}`}><FaComment /></Link></span><br></br>
                       <span id={`likeCount-${k._id}`}>{k.like.length} </span> Likes <span id={`dislikeCount-${k._id}`}>{k.dislike.length} </span> disLikes {k.commentsCount} comments <br></br><button type="button" className="btn btn-info btn-sm mt-1" data-toggle="modal" onClick={()=>{getComments(k._id,k.bgColor[0])}} data-target="#commentModal">
   Show All
@@ -236,9 +236,11 @@ function Home() {
             })}
             <Comment postId={postId} comments={defferedComments} bgColor={bgColor} setComments={setComments}></Comment>
           </div>
-          <div className='col-lg-4 col-md-6 col-sm-8 position-sticky d-flex align-items-center flex-column' style={{ top:100+'px'}}>
+          <div className='col-lg-4 col-md-6 col-sm-8 d-flex align-items-center flex-column'>
+          <div className='position-sticky' style={{ top:100+'px'}}>
             <p style={{ color: 'gray' }}>Make More Allies 👍👍🤞 <Link to={'/allies'} style={{ color: 'blue', cursor: 'pointer', textDecoration: "none" }}>See All</Link></p>
             <SuggestedAllies></SuggestedAllies>
+            </div>
           </div>
         </div>
         </InfiniteScroll>

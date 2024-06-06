@@ -54,24 +54,63 @@ else{
         res.status(500).json({ 'error': "Some error occured try again!" })
     }
 })
-router.post('/getstory',async(req,res)=>{
-    const userStories = await story.aggregate([{ $match: { userId: Types.ObjectId(req.body.id) } },
-    {
+router.post("/getstory", async (req, res) => {
+  let userStories = [];
+  if (req.body.logedUserOrNot) {
+    userStories = await story.aggregate([
+      { $match: { userId: Types.ObjectId(req.body.id) } },
+      {
         $facet: {
-            userStories: [
-            { $lookup: { from: 'users', localField: 'views', foreignField: '_id', as: 'views' } },
-            { $project: { 'views.email': 0, 'views.password': 0, 'views.following': 0, 'views.followers': 0,'userId':0} }],
-            totalStories: [{ $count: "totalStories" }]
-        }
-    }
+          userStories: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "views",
+                foreignField: "_id",
+                as: "views",
+              },
+            },
+            {
+              $project: {
+                "views.email": 0,
+                "views.password": 0,
+                "views.following": 0,
+                "views.followers": 0,
+              },
+            },
+          ],
+          totalStories: [{ $count: "totalStories" }],
+        },
+      },
     ]);
-    if(userStories[0].userStories && userStories[0].totalStories){
-        res.status(200).json({userStories:userStories[0]?.userStories,totalStories:userStories[0]?.totalStories[0]?.totalStories})
-    }
-    else{
-        res.status(500).json({error:'internel server error'})
-    }
-})
+  } else {
+    userStories = await story.aggregate([
+        { $match: { userId: Types.ObjectId(req.body.id) } },
+        {
+          $facet: {
+            userStories: [
+              {
+                $project: {
+                  "views": 0
+                },
+              },
+            ],
+            totalStories: [{ $count: "totalStories" }],
+          },
+        },
+      ]);
+  }
+  if (userStories[0].userStories && userStories[0].totalStories) {
+    res
+      .status(200)
+      .json({
+        userStories: userStories[0]?.userStories,
+        totalStories: userStories[0]?.totalStories[0]?.totalStories,
+      });
+  } else {
+    res.status(500).json({ error: "internel server error" });
+  }
+});
 router.post('/getuser',async(req,res)=>{
     const mystory=await story.find().where('userid').ne(req.body.id)
     const usersid=[]
@@ -92,12 +131,19 @@ router.post('/getuser',async(req,res)=>{
     }
 })
 router.post('/addview',async(req,res)=>{
-    const view=await story.findOneAndUpdate({_id:req.body.id},{views:req.body.views})
-    if(view){
-        res.status(200).json({view})
+    const userStory=await story.findById(req.body.storyId);
+    if(userStory){
+        if(userStory?.userId !== req?.body?.userId){
+            let Views=userStory?.views;
+        if(!Views?.includes(Types.ObjectId(req?.body?.userId))){
+            Views?.push(req?.body?.userId);
+            await story.findOneAndUpdate({_id:req.body.storyId},{views:Views});
+        }
+    }
+        res.status(200).json({msg:1})
     }
     else{
-        res.status(500).json({error:'internel server error'})
+        res.status(500).json({error:'Some error occured try again!'})
     }
 })
 router.post('/getview',async(req,res)=>{

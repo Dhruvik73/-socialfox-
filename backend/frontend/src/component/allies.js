@@ -25,7 +25,7 @@ function Allies() {
     const body={
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({"id":localStorage.getItem('id')})
+      body:JSON.stringify({"id":localStorage.getItem('id')?localStorage.getItem('id'):0})
     }
     const myres= await fetch('http://localhost:5001/user/fetchuser',body)
     const myresult=await myres.json()
@@ -34,7 +34,7 @@ function Allies() {
     const mybody={
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({"id":localStorage.getItem('id')})
+      body:JSON.stringify({"id":localStorage.getItem('id')?localStorage.getItem('id'):0})
     }
     const res= await fetch('http://localhost:5001/user/allusers',mybody)
     const result=await res.json()
@@ -61,7 +61,7 @@ function Allies() {
     const mybody = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ "logedUserId": localStorage.getItem('id'), 'toBeFollowed': id })
+      body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeFollowed': id })
     }
     await fetch('http://localhost:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
       if(res.status){
@@ -91,7 +91,7 @@ function Allies() {
     const mybody = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ "logedUserId": localStorage.getItem('id'), 'toBeUnFollowed': id })
+      body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeUnFollowed': id })
     }
     await fetch('http://localhost:5001/user/unFollow', mybody).then((res)=>(res.json())).then((res)=>{
       if(!res.error){

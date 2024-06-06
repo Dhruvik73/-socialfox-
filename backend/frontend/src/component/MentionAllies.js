@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'rea
 import UserProfileWithName from './UserProfileWithName';
 
 const MentionAllies = forwardRef(({ userRequested }, ref) => {
-    const logedUser = localStorage.getItem('id') ? localStorage.getItem('id') : 0;
+    const logedUser = localStorage.getItem('id')?localStorage.getItem('id'):0 ? localStorage.getItem('id')?localStorage.getItem('id'):0 : 0;
     let mentionedAllies = [];
     const [Allies, setAllies] = useState([])
     useEffect(() => {

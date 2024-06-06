@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { FcPrevious, FcNext } from "react-icons/fc";
 import { FaPlay, FaPause } from "react-icons/fa";
-
-function StoryCard({ story, totalStories, IsPreview }) {
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+const StoryCard=forwardRef(({ story, totalStories, IsPreview },ref)=>{
+  const logedUser=localStorage.getItem('id')?localStorage.getItem('id'):0;
   const [currentStoryCount, setCurrentStoryCount] = useState(0);
   const [storyPlayed, setStoryPlayed] = useState(0);
+  const [currentStoryId, setCurrentStoryId] = useState(story[currentStoryCount]?._id);
+  useEffect(() => {
+    addView();
+  }, [story])
+  
   const pausePlayStory = () => {
     const storyVideoPlayer = document.getElementById("video");
     if (storyVideoPlayer.paused) {
@@ -29,6 +36,8 @@ function StoryCard({ story, totalStories, IsPreview }) {
     } else {
       setCurrentStoryCount((prev) => prev - 1);
     }
+    setCurrentStoryId(story[currentStoryCount]?._id);
+    addView();
     document.getElementById("play").classList.remove("playPauseBtnShow");
     document.getElementById("pause").classList.remove("playPauseBtnShow");
   };
@@ -38,6 +47,8 @@ function StoryCard({ story, totalStories, IsPreview }) {
     } else {
       setCurrentStoryCount((prev) => prev);
     }
+    setCurrentStoryId(story[currentStoryCount]?._id);
+    addView();
     document.getElementById("play").classList.remove("playPauseBtnShow");
     document.getElementById("pause").classList.remove("playPauseBtnShow");
   };
@@ -53,6 +64,35 @@ function StoryCard({ story, totalStories, IsPreview }) {
       }
     }
   }
+  const addView=async()=>{
+    const body={
+      method:"POST",
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userId:logedUser,storyId:currentStoryId})
+    }
+    if(logedUser !== story[currentStoryCount]?.userId && !IsPreview){
+    await fetch('http://localhost:5001/story/addview',body).then((res)=>res.json()).then((res)=>{
+      if(res?.error){
+      toast.error(res?.error, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    })
+  }
+  }
+  useImperativeHandle(ref,()=>({
+    setCurrentStoryCountTo0:()=>{
+      setCurrentStoryCount(0)
+    },
+    currentStoryCount
+  }
+  ))
   return (
     <>
       {IsPreview ? (
@@ -82,9 +122,10 @@ function StoryCard({ story, totalStories, IsPreview }) {
               autoPlay
               id="video"
               onTimeUpdate={calculateStoryPlayedAndSetProgress}
+              preload="auto"
             ></video>
-            <div class="progress mt-1" style={{width:290+'px',height:5+'px'}}>
-  <div class="progress-bar progress-bar-striped bg-info" style={{width:`${storyPlayed}`+'%'}} role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+            <div className="progress mt-1" style={{width:290+'px',height:5+'px'}}>
+  <div className="progress-bar progress-bar-striped bg-info" style={{width:`${storyPlayed}`+'%'}} role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
             </div>
             <div onClick={pausePlayStory} id="play" className="playPauseBtn">
@@ -101,8 +142,19 @@ function StoryCard({ story, totalStories, IsPreview }) {
           </div>
         )
       )}
+      <ToastContainer
+            position="top-right"
+            autoClose={1000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
     </>
   );
-}
+})
 
 export default StoryCard;

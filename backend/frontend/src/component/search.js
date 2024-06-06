@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BiSearchAlt2 } from 'react-icons/bi'
+import UserProfileWithName from './UserProfileWithName'
 function Search() {
   const [search, setsearch] = useState('')
   const [followedUsers, setFollowedUsers] = useState([])
@@ -22,7 +23,7 @@ function Search() {
       const body = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: search, logedUser: localStorage.getItem('id') })
+        body: JSON.stringify({ query: search, logedUser: localStorage.getItem('id')?localStorage.getItem('id'):0 })
       }
       const res = await fetch('http://localhost:5001/user/search', body)
       const result = await res.json()
@@ -38,7 +39,7 @@ function Search() {
     const body = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: localStorage.getItem('id') })
+      body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0 })
     }
     const res = await fetch('http://localhost:5001/user/fetchuser', body)
     const result = await res.json()
@@ -47,7 +48,7 @@ function Search() {
     const mybody = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: localStorage.getItem('id'), detail: following })
+      body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0, detail: following })
     }
     await fetch('http://localhost:5001/user/allies', mybody)
     const userbody = {
@@ -58,7 +59,7 @@ function Search() {
     const myres = await fetch('http://localhost:5001/user/fetchuser', userbody)
     const myresult = await myres.json()
     let followers = myresult.myuser.followers
-    followers.push(localStorage.getItem('id'))
+    followers.push(localStorage.getItem('id')?localStorage.getItem('id'):0)
     const b = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -71,7 +72,7 @@ function Search() {
     const body = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: localStorage.getItem('id') })
+      body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0 })
     }
     const res = await fetch('http://localhost:5001/user/fetchuser', body)
     const result = await res.json()
@@ -80,7 +81,7 @@ function Search() {
     const mybody = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: localStorage.getItem('id'), detail: following })
+      body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0, detail: following })
     }
     await fetch('http://localhost:5001/user/allies', mybody)
     const userbody = {
@@ -91,7 +92,7 @@ function Search() {
     const myres = await fetch('http://localhost:5001/user/fetchuser', userbody)
     const myresult = await myres.json()
     let followers = myresult.myuser.followers
-    followers.splice(followers.indexOf(localStorage.getItem('id')), 1)
+    followers.splice(followers.indexOf(localStorage.getItem('id')?localStorage.getItem('id'):0), 1)
     const b = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -110,13 +111,11 @@ function Search() {
       </div>
       <div className='d-flex align-items-center flex-column mt-5'>
       {followedUsers.map((k) => {
-        return <div key={k._id} className="d-flex justify-content-between w-50 align-items-center mt-2"><div className='round'><img className='border border-secondary w-100 h-100' src={k.profilephoto} alt="not load" /> </div>
-          <span className='ms-3'>{k.firstname} {k.lastname}</span><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { unfollow(k._id) }}>unFollow</button>
+        return <div key={k._id} className="d-flex justify-content-between w-50 align-items-center mt-2"><UserProfileWithName user={k} linkNeeded={true}></UserProfileWithName><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { unfollow(k._id) }}>unFollow</button>
         </div>
       })}
       {unKnownUsers.map((k) => {
-        return <div key={k._id} className="d-flex justify-content-between w-50 align-items-center mt-2"><div className='round'><img className='border border-secondary w-100 h-100' src={k.profilephoto} alt="not load" /> </div>
-          <span className='ms-3'>{k.firstname} {k.lastname}</span><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { follow(k._id) }}>Follow</button>
+        return <div key={k._id} className="d-flex justify-content-between w-50 align-items-center mt-2"><UserProfileWithName user={k} linkNeeded={true}></UserProfileWithName><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { follow(k._id) }}>Follow</button>
         </div>
       })}
       </div>
