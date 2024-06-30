@@ -41,17 +41,20 @@ function Navbar() {
 <div style={{overflow:'hidden',height:70+'px',marginLeft:30+'px'}}><div className='d-flex' style={{height:100+'px',overflowX:'auto',whiteSpace:'nowrap',flexWrap:'nowrap',width:50+'vw',marginTop:10+'px'}}>
       <div style={{position:'relative'}}>
       <div className='round'>
-      {logedUserStoryCount>0?<img data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(id)}} className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load"/>:<Link to={`/story/${user._id}`}><img className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load" onClick={()=>{setUserId(0)}}/></Link>}
+      {logedUserStoryCount>0?<img data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(id);document.getElementById("video").play()}} className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load"/>:<Link to={`/story/${user._id}`}><img className='border border-secondary  w-100 h-100' src={user.profilephoto?user.profilephoto:logo} alt="not load" onClick={()=>{setUserId(0)}}/></Link>}
       </div>
       <Link to={`/story/${user._id}`}><span style={{position: 'absolute',top: 0+'px',right: 0+'px',display:'block',fontSize:17+'px',color:'blue',cursor:'pointer'}} onClick={()=>{setUserId(0)}}><BsPlus/></span></Link><p style={{fontSize:10+'px'}}>Your Story</p></div>
       {storyUser.map((k)=>{
-          return <div key={k.storyUser[0]?._id} style={{position:'relative'}} data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(k.storyUser[0]?._id)}}><UserProfileWithName user={k.storyUser[0]} nameBelow={true}></UserProfileWithName></div>
+          return <div key={k.storyUser[0]?._id} style={{position:'relative'}} data-target="#storyModal" data-toggle="modal" onClick={()=>{setUserId(k.storyUser[0]?._id);document.getElementById("video").play()}}><UserProfileWithName user={k.storyUser[0]} nameBelow={true}></UserProfileWithName></div>
       })}
       </div>
       </div>
         <div className='d-flex justify-content-end'>
             <ul style={{marginRight:2+'vw',marginTop:8+'px'}}>
-            <span style={{fontSize:1.8+'vw',color:'#157ad0f5',marginRight:25+'px'}}><Link to={`/profile/${localStorage.getItem('id')?localStorage.getItem('id'):0}`}><BsPersonCircle/></Link><span onClick={logout} style={{fontSize:1.8+'vw',color:'#157ad0f5',marginLeft:25+'px'}}><Link to={'/login'} style={{textDecoration:'none'}}><AiOutlineLogout/> </Link></span><Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
+            <span style={{fontSize:1.8+'vw',color:'#157ad0f5',marginRight:25+'px'}}>
+                <Link to={`/profile/${localStorage.getItem('id')?localStorage.getItem('id'):0}`}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><BsPersonCircle/></span></Link>
+                <Link to={'/login'}><span onClick={logout} className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><AiOutlineLogout/> </span></Link>
+                <Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
                 <Link to={'/allies'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><FaUserFriends/></span></Link>
                 <Link to={'/search'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(35 114 180 / 96%)'}}><BiSearchAlt2/></span></Link>
                 <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link></span>

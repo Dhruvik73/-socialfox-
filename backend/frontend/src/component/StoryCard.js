@@ -3,7 +3,7 @@ import { FcPrevious, FcNext } from "react-icons/fc";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-const StoryCard=forwardRef(({ story, totalStories, IsPreview },ref)=>{
+const StoryCard=forwardRef(({ story, totalStories, IsPreview,setParentStoryCount },ref)=>{
   const logedUser=localStorage.getItem('id')?localStorage.getItem('id'):0;
   const [currentStoryCount, setCurrentStoryCount] = useState(0);
   const [storyPlayed, setStoryPlayed] = useState(0);
@@ -33,8 +33,10 @@ const StoryCard=forwardRef(({ story, totalStories, IsPreview },ref)=>{
   const next = () => {
     if (currentStoryCount < totalStories - 1) {
       setCurrentStoryCount((prev) => prev + 1);
+      setParentStoryCount((prev) => prev + 1);
     } else {
       setCurrentStoryCount((prev) => prev - 1);
+      setParentStoryCount((prev) => prev - 1);
     }
     setCurrentStoryId(story[currentStoryCount]?._id);
     addView();
@@ -44,8 +46,10 @@ const StoryCard=forwardRef(({ story, totalStories, IsPreview },ref)=>{
   const prev = () => {
     if (currentStoryCount > 0) {
       setCurrentStoryCount((prev) => prev - 1);
+      setParentStoryCount((prev) => prev - 1);
     } else {
       setCurrentStoryCount((prev) => prev);
+      setParentStoryCount((prev) => prev);
     }
     setCurrentStoryId(story[currentStoryCount]?._id);
     addView();
@@ -88,7 +92,8 @@ const StoryCard=forwardRef(({ story, totalStories, IsPreview },ref)=>{
   }
   useImperativeHandle(ref,()=>({
     setCurrentStoryCountTo0:()=>{
-      setCurrentStoryCount(0)
+      setCurrentStoryCount(0);
+      setParentStoryCount(0);
     },
     currentStoryCount
   }

@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react'
+import { useNavigate } from 'react-router';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
+import { useDispatch,useSelector } from 'react-redux';
+import { detectChangeOfPosts } from '../Actions/userIntrection';
 import Post from './Post';
 function Addpost() {
     const [des,setdes]=useState('')
+    const nevigation=useNavigate();
+    const dispatch=useDispatch();
+    const state=useSelector(state=>state.userIntrection.payload)
     let id=localStorage.getItem('id')?localStorage.getItem('id'):0
     const [userPosts,setUserPosts]=useState([])
     const getUserPosts=async ()=>{
@@ -45,7 +51,9 @@ const submit=async()=>{
       draggable: true,
       progress: undefined,
     });
+    dispatch(detectChangeOfPosts());
     setTimeout(()=>{
+      nevigation("/")
     },1800)
    }
    else{

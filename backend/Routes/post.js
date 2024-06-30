@@ -112,7 +112,7 @@ router.post('/fetchpost', async (req, res) => {
                 }
             }
 
-        ]).skip(req.body.limit - 5).limit(5);
+        ]).sort({insertDate:-1}).skip(req.body.limit - 5).limit(5);
         res.status(200).json({ allpost, totalPost })
     } catch (e) {
         res.status(500).json({ 'error': e })

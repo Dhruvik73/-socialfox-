@@ -225,7 +225,7 @@ function Home() {
                       {!k.like.includes(localStorage.getItem('id')?localStorage.getItem('id'):0) ? <span className='likebtns' id={`like-${k._id}`} onClick={() => { addlike(k._id) }}><AiOutlineLike /></span> : '' }
                       {k.dislike.includes(localStorage.getItem('id')?localStorage.getItem('id'):0) ? <span className='likebtns ms-3' id={`fillDislike-${k._id}`} onClick={() => { removedislike(k._id) }}><AiFillDislike /></span> : '' }
                       {!k.dislike.includes(localStorage.getItem('id')?localStorage.getItem('id'):0) ? <span className='likebtns ms-3' id={`dislike-${k._id}`} onClick={() => { adddislike(k._id) }}><AiOutlineDislike /></span> : '' }
-                      <span className='likebtns ms-3'><Link to={`/comment/${k._id}`}><FaComment /></Link></span><br></br>
+                      <span className='likebtns ms-3'><FaComment onClick={()=>{getComments(k._id,k.bgColor[0])}} data-target="#commentModal" data-toggle="modal" /></span><br></br>
                       <span id={`likeCount-${k._id}`}>{k.like.length} </span> Likes <span id={`dislikeCount-${k._id}`}>{k.dislike.length} </span> disLikes {k.commentsCount} comments <br></br><button type="button" className="btn btn-info btn-sm mt-1" data-toggle="modal" onClick={()=>{getComments(k._id,k.bgColor[0])}} data-target="#commentModal">
   Show All
 </button>

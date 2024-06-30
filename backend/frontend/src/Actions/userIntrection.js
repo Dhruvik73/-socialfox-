@@ -20,6 +20,18 @@ export function followMe(id){
 
 
 export function setLastviewedPost(posts,comments,postId,totalPosts,isCloseBtnClicked){
-    return async dispatch=>{dispatch(sendRes({posts,comments,postId,totalPosts,isCloseBtnClicked},'setLastviewedPost'))
+    return async dispatch=>
+    {
+        dispatch(sendRes({posts,comments,postId,totalPosts,isCloseBtnClicked},'setLastviewedPost'))
           }
     }
+
+export function detectChangeOfPosts(){
+    const res={
+        postChanged:1
+    }
+    return async dispatch=>{
+        dispatch(sendRes(res,'detectChangeStream'))
+    }
+
+}

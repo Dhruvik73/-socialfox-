@@ -8,6 +8,7 @@ function Showstory({ userId }) {
   const storyCountRef = useRef();
   const logedUser=localStorage.getItem('id')?localStorage.getItem('id'):0;
   const [story, setStory] = useState([]);
+  const [currentStoryCount, setCurrentStoryCount] = useState(0);
   const [totalStories, SetTotalStories] = useState(0);
   useEffect(() => {
     getallstories();
@@ -25,8 +26,10 @@ function Showstory({ userId }) {
   };
   const stopVideoOnClose = () => {
     const videoPlayer = document.getElementById("video");
+    storyCountRef?.current?.setCurrentStoryCountTo0()
+    setTimeout(() => {
     videoPlayer?.pause();
-    storyCountRef?.current?.setCurrentStoryCountTo0();
+    }, 100);
     document.getElementById("play")?.classList?.remove("playPauseBtnShow");
     document.getElementById("pause")?.classList?.remove("playPauseBtnShow");
   };
@@ -53,6 +56,7 @@ function Showstory({ userId }) {
                     ref={storyCountRef}
                     story={story}
                     totalStories={totalStories}
+                    setParentStoryCount={setCurrentStoryCount}
                   ></StoryCard>
                 )}
               </div>
@@ -60,8 +64,8 @@ function Showstory({ userId }) {
           </div>
           <div className="modal-footer d-flex justify-content-between">
             <div className="d-flex">
-              {logedUser===userId&&story[storyCountRef?.current?.currentStoryCount]?.views?.map((k) => {
-                return <UserProfileWithName user={k} linkNeeded={true} nameBelow={true}></UserProfileWithName>
+              {logedUser===userId&&story[currentStoryCount]?.views?.map((k) => {
+                return <UserProfileWithName user={k} linkNeeded={true} key={k._id} nameBelow={true}></UserProfileWithName>
               })}
             </div>
             <button
