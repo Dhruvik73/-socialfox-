@@ -1,7 +1,7 @@
 import React, { useState,useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {BsPersonCircle,BsPlus} from 'react-icons/bs'
-import {BiHomeAlt,BiSearchAlt2} from 'react-icons/bi'
+import {BiChat, BiHomeAlt,BiSearchAlt2} from 'react-icons/bi'
 import {FaUserFriends} from 'react-icons/fa'
 import {MdOutlineAddToPhotos} from 'react-icons/md'
 import {AiOutlineLogout} from 'react-icons/ai'
@@ -56,8 +56,8 @@ function Navbar() {
                 <Link to={'/login'}><span onClick={logout} className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><AiOutlineLogout/> </span></Link>
                 <Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
                 <Link to={'/allies'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><FaUserFriends/></span></Link>
-                <Link to={'/search'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(35 114 180 / 96%)'}}><BiSearchAlt2/></span></Link>
-                <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link></span>
+                <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link>
+                <Link to={`/chat`}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><BiChat/></span></Link></span>
             </ul>
         </div>
     </div>

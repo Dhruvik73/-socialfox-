@@ -5,7 +5,6 @@ import Login from './component/login';
 import Navbar from './component/navbar';
 import Register from './component/register';
 import Allies from './component/allies';
-import Search from './component/search';
 import Profile from './component/profile/[slug]';
 import Addpost from './component/addpost';
 import Forgot from './component/forgot';
@@ -13,9 +12,10 @@ import Story from './component/story';
 import Showstory from './component/showstory';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorView from './component/ErrorView';
+import ChatRoom from './component/ChatRoom'
 const router = new createBrowserRouter([{
   path: "/",
-  element: <ErrorBoundary FallbackComponent={<ErrorView></ErrorView>}><Authenticate><NavbarWrapper /></Authenticate></ErrorBoundary>,
+  element: <Authenticate><NavbarWrapper /></Authenticate>,
   children: [
     {
       path: "/",
@@ -23,15 +23,14 @@ const router = new createBrowserRouter([{
     }
   ,
     {
-      path: "/search",
-      element: <Search />
-    },
-    {
       path: "/allies",
       element: <Allies />
     },
     { path: "/profile/:id", 
-      element: <ErrorBoundary FallbackComponent={<ErrorView></ErrorView>}><Profile /></ErrorBoundary>
+      element: <Profile />
+    },
+    { path: "/chat", 
+      element: <ChatRoom />
     },
     {
       path: "/addpost",

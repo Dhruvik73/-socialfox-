@@ -39,13 +39,15 @@ const adjustColor = (color) => {
 }
 router.post('/add', async (req, res) => {
     try {
-        var postcount = (await post.where({ userid: req.body.id }).sort({ post: -1 })).at(0)
+        var postcount = (await post.where({ user: req.body.id }).sort({ post: -1 })).at(0)
+        console.log(postcount)
         if (postcount) {
             postcount = postcount.userPostCount
         }
         else {
             postcount = 0;
         }
+        console.log(postcount,req.body.id)
         const userPosts = [];
         const bgColors = [];
         for (const post of req.body.post) {

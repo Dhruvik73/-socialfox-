@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BiSearchAlt2 } from 'react-icons/bi'
 import UserProfileWithName from './UserProfileWithName'
-function Search() {
+function Search({setToUser,setToUserDetails}) {
   const [search, setsearch] = useState('')
   const [followedUsers, setFollowedUsers] = useState([])
   const [unKnownUsers, setUnKnownUsers] = useState([])
@@ -43,7 +43,7 @@ function Search() {
     }
     const res = await fetch('http://localhost:5001/user/fetchuser', body)
     const result = await res.json()
-    let following = result.myuser.following
+    let following = result.logedUser.following
     following.push(id)
     const mybody = {
       method: 'POST',
@@ -58,14 +58,14 @@ function Search() {
     }
     const myres = await fetch('http://localhost:5001/user/fetchuser', userbody)
     const myresult = await myres.json()
-    let followers = myresult.myuser.followers
+    let followers = myresult.logedUser.followers
     followers.push(localStorage.getItem('id')?localStorage.getItem('id'):0)
     const b = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: id, detail: followers })
     }
-    await fetch('http://localhost:5001/user/follower', b)
+    await fetch('http://localhost:5001/user/follow', b)
     setreload(reload + 1)
   }
   const unfollow = async (id) => {
@@ -102,20 +102,20 @@ function Search() {
     setreload(reload + 1)
   }
   return (
-    <div className='container' style={{ marginTop: 100 + 'px' }}>
-      <div className="input-group">
-        <div className="form-outline d-flex">
-          <input onChange={onchange} id="search-input" style={{ height: 5 + 'vh', width: 40 + 'vw', marginLeft: 100 + 'px' }} type="text" className="form-control" placeholder='Search' />
-          <button className="btn btn-outline-info btn-sm" onClick={submit} style={{ fontSize: 15 + 'px', marginLeft: 15 + 'px' }}><BiSearchAlt2 /></button>
+    <div className='w-100'>
+      <div className="input-group w-100">
+        <div className="form-outline d-flex w-100">
+          <input onChange={onchange} id="search-input" type="text" className="form-control w-90" placeholder='Search' />
+          <button className="btn btn-outline-info btn-sm w-10" onClick={submit} style={{ fontSize: 15 + 'px', marginLeft: 15 + 'px' }}><BiSearchAlt2 /></button>
         </div>
       </div>
-      <div className='d-flex align-items-center flex-column mt-5'>
+      <div className='d-flex align-items-center flex-column mt-2'>
       {followedUsers.map((k) => {
-        return <div key={k._id} className="d-flex justify-content-between w-50 align-items-center mt-2"><UserProfileWithName user={k} linkNeeded={true}></UserProfileWithName><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { unfollow(k._id) }}>unFollow</button>
+        return <div key={k._id} className="d-flex justify-content-between w-100 align-items-center mt-2"><div><UserProfileWithName user={k} linkNeeded={true}></UserProfileWithName></div><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { unfollow(k._id) }}>unFollow</button>
         </div>
       })}
       {unKnownUsers.map((k) => {
-        return <div key={k._id} className="d-flex justify-content-between w-50 align-items-center mt-2"><UserProfileWithName user={k} linkNeeded={true}></UserProfileWithName><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { follow(k._id) }}>Follow</button>
+        return <div key={k._id} className="d-flex justify-content-between w-100 align-items-center mt-2"><div className='cursor-pointer' onClick={()=>{setToUser(k._id);setToUserDetails(k)}}><UserProfileWithName user={k} linkNeeded={true}></UserProfileWithName></div><button className='btn btn-outline-info btn-sm h-75 ms-3' onClick={() => { follow(k._id) }}>Follow</button>
         </div>
       })}
       </div>
