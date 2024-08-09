@@ -6,13 +6,28 @@
     color:#157ad0f5 !important;
 }
 .chat-bar{
-   background-image: url('../images/fox.jpg');
-   background-size: contain;
-   opacity: 0.7;
+   border: 2px solid #157ad0f5;
+   border-radius: 20px;
 }
 .chat_historyTab{
     background-color: aliceblue;
 }
 .chatRoom{
     margin-top: 100px;
+}
+#chatInput{
+    background-color: aliceblue;
+}
+.oldChats{
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(12, 97, 169,0.5);
+    cursor: pointer;
+}
+.chatsDiv::-webkit-scrollbar{
+    width:5px;
+}
+
+.chatsDiv{
+    overflow-y: scroll;
 }

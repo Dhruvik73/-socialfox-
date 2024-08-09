@@ -9,7 +9,11 @@ import logo from '../images/logo.png'
 import '../component_CSS/navbar.css'
 import UserProfileWithName from './UserProfileWithName'; 
 import Showstory from './showstory'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLastviewedPost } from '../Actions/userIntrection'
 function Navbar() {
+  const dispatch=useDispatch();
+  const state=useSelector(state=>state.userIntrection.payload);
   let id=localStorage.getItem('id')?localStorage.getItem('id'):0
   const [user,setuser]=useState({})
   const [storyUser,setStoryUser]=useState([])
@@ -28,6 +32,7 @@ function Navbar() {
     const res=await fetch('http://localhost:5001/user/fetchuser',body)
     const result=await res.json()
     setuser(result?.logedUser)
+    dispatch(setLastviewedPost(state.posts,state.comments,state.postId,state.totalPosts,state.isCloseBtnClicked,result?.logedUser))
     setStoryUser(result?.userStories)
     setLogedUserStoryCount(result?.logedUserStoryCount)
     }

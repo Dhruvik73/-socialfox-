@@ -39,7 +39,7 @@ function Home() {
     if(result.allpost){
      setpost(result.allpost)
      setcount(result.totalPost)
-     dispatch(setLastviewedPost(result.allpost,[],0,result.totalPost,false))
+     dispatch(setLastviewedPost(result.allpost,[],0,result.totalPost,false,result.logedUserDetails))
     }
   }
   }
@@ -55,7 +55,7 @@ function Home() {
     const result=await res.json()
     if(result.allpost){
      setpost(post.concat(result.allpost))
-     dispatch(setLastviewedPost(post.concat(result.allpost),[],0,count,false))
+     dispatch(setLastviewedPost(post.concat(result.allpost),[],0,count,false,result.logedUserDetails))
     }
   }
   }
@@ -182,7 +182,7 @@ function Home() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({postId:currentPostId,userId:userId})
     }
-    await fetch('http://localhost:5001/post/getComments',body).then((res)=>res.json()).then((res)=>{setComments(res.comments);dispatch(setLastviewedPost(post,res.comments,currentPostId,count,false))})
+    await fetch('http://localhost:5001/post/getComments',body).then((res)=>res.json()).then((res)=>{setComments(res.comments);dispatch(setLastviewedPost(post,res.comments,currentPostId,count,false,state.logedUserDetails))})
   }
   }
 
@@ -214,7 +214,7 @@ function Home() {
           <div className='d-flex justify-content-around row'>
          <div className='col-lg-4 col-md-6 col-sm-8 d-flex align-items-center flex-column'>
             {post.map((k,index)=>{
-              return <div className='w-100 border rounded mt-5 postcard' key={k._id} id={`${k._id}-postcard-${index}`} style={{backgroundColor:k.bgColor[0]}}>
+              return <div className='w-100 border rounded mt-5 postcard' key={k._id} id={`${k._id}-postcard-${index}`} style={{backgroundColor:k.bgColor[0],boxShadow:`5px 5px 10px ${k.bgColor[0]}`}}>
               <div className='mt-2 ms-2 h-10'><UserProfileWithName user={k.user} linkNeeded={true}></UserProfileWithName></div>
                   <div className='h-90'>
                     <div className='d-flex flex-column align-items-center justify-content-center h-100 mt-1'>

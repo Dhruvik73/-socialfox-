@@ -39,3 +39,8 @@
 .like-btn{
     font-size: larger;
 }
+.suggestedAlliesDiv{
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(12, 97, 169,0.5);
+}

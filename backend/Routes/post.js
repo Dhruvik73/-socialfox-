@@ -6,6 +6,7 @@ const getColors = require('get-image-colors')
 const systemPath = require('path')
 const comment = require('../models/comment')
 const reply = require('../models/reply')
+const user = require('../models/user')
 const adjustColor = (color) => {
     // Check if the color is in hex format, if not, return as it is
     if (!/^#[0-9A-F]{6}$/i.test(color)) {
@@ -98,6 +99,7 @@ router.post('/add', async (req, res) => {
 })
 router.post('/fetchpost', async (req, res) => {
     try {
+        var logedUserDetails=await user.findById(req.body.userId).select('-email -password');
         var totalPost = await post.find().count()
         // var allpost = await post.find().populate({ path: "user", model: "user", select: "-following -followers -password -email" }).skip(req.body.limit - 5).limit(5);
         var allpost = await post.aggregate([
@@ -115,7 +117,7 @@ router.post('/fetchpost', async (req, res) => {
             }
 
         ]).sort({insertDate:-1}).skip(req.body.limit - 5).limit(5);
-        res.status(200).json({ allpost, totalPost })
+        res.status(200).json({ allpost, totalPost,logedUserDetails})
     } catch (e) {
         res.status(500).json({ 'error': e })
     }

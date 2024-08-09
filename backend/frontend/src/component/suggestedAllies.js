@@ -87,7 +87,7 @@ function SuggestedAllies() {
             pauseOnHover
           />
     {suggestedAllies.map((k)=>{
-      return <div key={k._id}>
+      return <div key={k._id} className='suggestedAlliesDiv'>
       <div key={k._id} id={k._id} className='d-flex align-items-center mt-3'><Link to={`profile/${k._id}`}><div className='round'><img className='border border-secondary w-100 h-100' src={k.profilephoto?k.profilephoto:require('../images/fox.jpg')} alt="not load"/></div></Link><span className='ms-2'>{k.firstname+' '+k.lastname}</span><span className='followtxt ms-3' onClick={()=>{followme(k._id)}} id={`${k._id}-btn`}>{"Follow"}</span></div>
       </div>
     })}

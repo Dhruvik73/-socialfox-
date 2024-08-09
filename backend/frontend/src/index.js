@@ -14,7 +14,6 @@ const store=configureStore({
   reducer:rootReducer
 })
 root.render(
-  <React.StrictMode>
   <ErrorBoundary FallbackComponent={
     <ErrorView></ErrorView>
  }>
@@ -22,7 +21,6 @@ root.render(
     <App />
     </Provider>
     </ErrorBoundary>
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

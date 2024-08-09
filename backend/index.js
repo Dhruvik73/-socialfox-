@@ -35,9 +35,7 @@ const io=new Server(server,{
 io.on("connection",(socket)=>{
     //write events
     socket.on("sendMessage",(data)=>{
-        io.emit("messageResponse",{
-            data
-        })// join the user to the socket room
+        io.emit("messageResponse",data)// join the user to the socket room
     })
 })
 
