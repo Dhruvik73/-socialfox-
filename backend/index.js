@@ -27,7 +27,7 @@ const server=http.createServer(app);
 const io=new Server(server,{
     cors:{
         methods:["GET","POST"],
-        origin:"http://localhost:3000"
+        origin:"http://localhost:3001"
     }
 })
 
@@ -36,6 +36,9 @@ io.on("connection",(socket)=>{
     //write events
     socket.on("sendMessage",(data)=>{
         io.emit("messageResponse",data)// join the user to the socket room
+    })
+    socket.on("serverNotification",(data)=>{
+        io.emit("clientNotification",data)
     })
 })
 

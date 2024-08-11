@@ -10,18 +10,28 @@ import '../component_CSS/navbar.css'
 import UserProfileWithName from './UserProfileWithName'; 
 import Showstory from './showstory'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLastviewedPost } from '../Actions/userIntrection'
+import { setLastviewedPost } from '../Actions/userIntrection';
+import io from 'socket.io-client'
+const Socket=io.connect("http://localhost:5001")
 function Navbar() {
   const dispatch=useDispatch();
   const state=useSelector(state=>state.userIntrection.payload);
   let id=localStorage.getItem('id')?localStorage.getItem('id'):0
   const [user,setuser]=useState({})
+  const [notifications,setNotifications]=useState([]);
   const [storyUser,setStoryUser]=useState([])
   const [userId,setUserId]=useState(0)
   const [logedUserStoryCount,setLogedUserStoryCount]=useState(0)
   useEffect(() => {
       getStories()
   }, [])
+  useEffect(() => {
+    Socket.on("clientNotification",(data)=>{
+      setNotifications([...notifications,data])
+    })
+  }, [Socket])
+  
+  
   const getStories=async()=>{
     const body={
       method:'POST',
@@ -62,7 +72,11 @@ function Navbar() {
                 <Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
                 <Link to={'/allies'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><FaUserFriends/></span></Link>
                 <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link>
-                <Link to={`/chat`}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><BiChat/></span></Link></span>
+                <span className='badge badge-light position-relative'><Link to={`/chat`} style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><BiChat/></Link><span class="position-absolute top-25 start-75 translate-middle badge rounded-pill bg-info">
+    {notifications.length}
+    <span class="visually-hidden">unread messages</span>
+  </span></span>
+                </span>
             </ul>
         </div>
     </div>

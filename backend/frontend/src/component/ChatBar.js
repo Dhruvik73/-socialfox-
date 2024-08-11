@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { AiOutlineSend } from 'react-icons/ai'
 import UserProfileWithName from './UserProfileWithName';
+import {throwNotifications} from '../middleware/notificationManager'
 function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,activeChat}) {
     const [message,setMessage]=useState("");
     const [recentMessages,setRecentMessages]=useState([]);
@@ -50,6 +51,12 @@ function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,activeCha
         socket.on('messageResponse', async(data) => {
         if(data && Array.isArray(data)){
         setRecentMessages(data);
+            const notification={
+              fromUserDetails:fromUserDetails,
+              chat:data[data.length-1],
+              notificationType:"chatMessage"
+            }
+            throwNotifications(notification);
         }
         });
       }
