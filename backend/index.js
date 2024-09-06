@@ -18,6 +18,7 @@ app.use('/user',require('./Routes/user'))
 app.use('/post',require('./Routes/post'))
 app.use('/story',require('./Routes/story'))
 app.use('/chat',require('./Routes/chat'))
+app.use('/notification',require('./Routes/notification'))
 if(process.env.NODE_ENV=="production"){
     app.use(express.static("frontend/build"))
 }
@@ -27,7 +28,7 @@ const server=http.createServer(app);
 const io=new Server(server,{
     cors:{
         methods:["GET","POST"],
-        origin:"http://localhost:3001"
+        origin:"http://localhost:3000"
     }
 })
 
@@ -35,7 +36,7 @@ const io=new Server(server,{
 io.on("connection",(socket)=>{
     //write events
     socket.on("sendMessage",(data)=>{
-        io.emit("messageResponse",data)// join the user to the socket room
+        io.emit("messageResponse",data)
     })
     socket.on("serverNotification",(data)=>{
         io.emit("clientNotification",data)

@@ -27,10 +27,11 @@ function Navbar() {
   }, [])
   useEffect(() => {
     Socket.on("clientNotification",(data)=>{
+      if(id===data?.chat?.to){
       setNotifications([...notifications,data])
+      }
     })
-  }, [Socket])
-  
+  },[Socket,notifications])
   
   const getStories=async()=>{
     const body={
@@ -72,9 +73,9 @@ function Navbar() {
                 <Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
                 <Link to={'/allies'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><FaUserFriends/></span></Link>
                 <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link>
-                <span className='badge badge-light position-relative'><Link to={`/chat`} style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><BiChat/></Link><span class="position-absolute top-25 start-75 translate-middle badge rounded-pill bg-info">
+                <span className='badge badge-light position-relative'><Link to={`/chat`} style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><BiChat/></Link><span className="position-absolute top-25 start-75 translate-middle badge rounded-pill bg-info">
     {notifications.length}
-    <span class="visually-hidden">unread messages</span>
+    <span className="visually-hidden">unread messages</span>
   </span></span>
                 </span>
             </ul>

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 const user = require('./user')
 
-const chat = new Schema({
+const notification = new Schema({
     fromUser: {
         type: mongoose.Types.ObjectId,
         ref: user
@@ -11,17 +11,17 @@ const chat = new Schema({
         type: mongoose.Types.ObjectId,
         ref: user
     },
-    chats: {
-        type: Array,
+    notification: {
+        type: Object,
         required:true
     },
-    chatStartDate:{
-        type:Date,
-        default:Date.now()
+    isRead:{
+        type:Boolean,
+        default:false
     },
-    chatUpdateDate:{
+    notificationDate:{
         type:Date,
         default:Date.now()
     }
 })
-module.exports = mongoose.model('chats', chat)
+module.exports = mongoose.model('notifications', notification)

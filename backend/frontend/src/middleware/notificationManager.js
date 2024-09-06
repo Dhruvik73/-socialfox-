@@ -1,5 +1,13 @@
-import io from 'socket.io-client'
-const Socket=io.connect("http://localhost:5001")
-export const throwNotifications=(notificationData)=>{
-   Socket.emit("serverNotification",notificationData)
+export const throwNotifications=async(notificationData,Socket)=>{
+   await Socket.emit("serverNotification",notificationData)
+   const body={
+      method:"POST",
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({notification:notificationData,fromUser:notificationData?.fromUser,toUser:notificationData?.toUser})
+    }
+    // await fetch('http://localhost:5001/notification/addNotifications',body).then(res=>res.json()).then((res)=>{
+    //   if(res.error){
+    //     return res.error
+    //   }
+    // })
 }

@@ -3,8 +3,6 @@ import { useState } from 'react'
 import {Link} from 'react-router-dom'
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import {useDispatch, useSelector} from 'react-redux'
-import { followMe } from '../Actions/userIntrection';
 function Allies() {
   const [val,setval]=useState([])
   const [following,setfollowing]=useState([])
