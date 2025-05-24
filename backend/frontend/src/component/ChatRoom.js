@@ -8,7 +8,7 @@ import Search from './search';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-const connectSocketIO=io.connect('http://localhost:5001');
+const connectSocketIO=io.connect('http://13.234.20.67:5001');
 function ChatRoom() {
   const [toUser,setToUser]=useState("");
   const [bubbleNeeded,setBubbleNeeded]=useState(false);
@@ -29,7 +29,7 @@ function ChatRoom() {
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({fromUser:data?.chat?.from,toUser:data?.chat?.to})
           }
-          await fetch('http://localhost:5001/notification/updateNotifications',body).then(res=>res.json()).then((res)=>{
+          await fetch('http://13.234.20.67:5001/notification/updateNotifications',body).then(res=>res.json()).then((res)=>{
             if(res.error){
               toast.warning(res.error, {
                 position: "top-right",
@@ -51,7 +51,7 @@ function ChatRoom() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({fromUser:fromUser,toUser:toUser})
     }
-    await fetch('http://localhost:5001/chat/getUserChats',body).then(res=>res.json()).then((res)=>{
+    await fetch('http://13.234.20.67:5001/chat/getUserChats',body).then(res=>res.json()).then((res)=>{
       if(res.userChats&&res.userChats.length>0){
         setRecentMessages(res.userChats[0]?.chats)
         setToUserDetails(res.userChats[0]?.fromUser[0]?._id===fromUser?res.userChats[0]?.toUser[0]:res.userChats[0]?.fromUser[0])

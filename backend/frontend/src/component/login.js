@@ -7,7 +7,7 @@ function Login() {
   const [val, setval] = useState({ email: "", password: "" });
   const navigation=useNavigate();
   const submit = async () => {
-    const url = "http://localhost:5001/user/login";
+    const url = "http://13.234.20.67:5001/user/login";
     const reqbody = {
       method: "POST",
       headers: { "Content-Type": "application/json" },

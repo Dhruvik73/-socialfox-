@@ -12,7 +12,7 @@ import Showstory from './showstory'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLastviewedPost } from '../Actions/userIntrection';
 import io from 'socket.io-client'
-const Socket=io.connect("http://localhost:5001")
+const Socket=io.connect("http://13.234.20.67:5001")
 function Navbar() {
   const dispatch=useDispatch();
   const state=useSelector(state=>state.userIntrection.payload);
@@ -40,7 +40,7 @@ function Navbar() {
       body:JSON.stringify({id:id})
     }
     if(id!=null){
-    const res=await fetch('http://localhost:5001/user/fetchuser',body)
+    const res=await fetch('http://13.234.20.67:5001/user/fetchuser',body)
     const result=await res.json()
     setuser(result?.logedUser)
     dispatch(setLastviewedPost(state.posts,state.comments,state.postId,state.totalPosts,state.isCloseBtnClicked,result?.logedUser))

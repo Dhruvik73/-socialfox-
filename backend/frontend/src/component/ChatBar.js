@@ -46,7 +46,7 @@ function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,setRecent
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({chat:message,fromUser:fromUser,toUser:toUser})
         }
-        await fetch('http://localhost:5001/chat/addUserChats',body).then(res=>res.json()).then((res)=>{
+        await fetch('http://13.234.20.67:5001/chat/addUserChats',body).then(res=>res.json()).then((res)=>{
           if(res.error){
             toast.warning(res.error, {
               position: "top-right",

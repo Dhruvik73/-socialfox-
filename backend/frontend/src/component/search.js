@@ -26,7 +26,7 @@ function Search({setToUser,setToUserDetails,setOldCHats,toUser}) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: search, logedUser: localStorage.getItem('id')?localStorage.getItem('id'):0 })
       }
-      const res = await fetch('http://localhost:5001/user/search', body)
+      const res = await fetch('http://13.234.20.67:5001/user/search', body)
       const result = await res.json()
       setFollowedUsers(result.followedUsers)
       setUnKnownUsers(result.unKnownUsers)
@@ -42,7 +42,7 @@ function Search({setToUser,setToUserDetails,setOldCHats,toUser}) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0 })
     }
-    const res = await fetch('http://localhost:5001/user/fetchuser', body)
+    const res = await fetch('http://13.234.20.67:5001/user/fetchuser', body)
     const result = await res.json()
     let following = result.logedUser.following
     following.push(id)
@@ -51,13 +51,13 @@ function Search({setToUser,setToUserDetails,setOldCHats,toUser}) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0, detail: following })
     }
-    await fetch('http://localhost:5001/user/allies', mybody)
+    await fetch('http://13.234.20.67:5001/user/allies', mybody)
     const userbody = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: id })
     }
-    const myres = await fetch('http://localhost:5001/user/fetchuser', userbody)
+    const myres = await fetch('http://13.234.20.67:5001/user/fetchuser', userbody)
     const myresult = await myres.json()
     let followers = myresult.logedUser.followers
     followers.push(localStorage.getItem('id')?localStorage.getItem('id'):0)
@@ -66,7 +66,7 @@ function Search({setToUser,setToUserDetails,setOldCHats,toUser}) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: id, detail: followers })
     }
-    await fetch('http://localhost:5001/user/follow', b)
+    await fetch('http://13.234.20.67:5001/user/follow', b)
     setreload(reload + 1)
   }
   const unfollow = async (id) => {
@@ -75,7 +75,7 @@ function Search({setToUser,setToUserDetails,setOldCHats,toUser}) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0 })
     }
-    const res = await fetch('http://localhost:5001/user/fetchuser', body)
+    const res = await fetch('http://13.234.20.67:5001/user/fetchuser', body)
     const result = await res.json()
     let following = result.myuser.following
     following.splice(following.indexOf(id), 1)
@@ -84,13 +84,13 @@ function Search({setToUser,setToUserDetails,setOldCHats,toUser}) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: localStorage.getItem('id')?localStorage.getItem('id'):0, detail: following })
     }
-    await fetch('http://localhost:5001/user/allies', mybody)
+    await fetch('http://13.234.20.67:5001/user/allies', mybody)
     const userbody = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: id })
     }
-    const myres = await fetch('http://localhost:5001/user/fetchuser', userbody)
+    const myres = await fetch('http://13.234.20.67:5001/user/fetchuser', userbody)
     const myresult = await myres.json()
     let followers = myresult.myuser.followers
     followers.splice(followers.indexOf(localStorage.getItem('id')?localStorage.getItem('id'):0), 1)
@@ -99,7 +99,7 @@ function Search({setToUser,setToUserDetails,setOldCHats,toUser}) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: id, detail: followers })
     }
-    await fetch('http://localhost:5001/user/follower', b)
+    await fetch('http://13.234.20.67:5001/user/follower', b)
     setreload(reload + 1)
   }
   const openUserChat=async(user)=>{

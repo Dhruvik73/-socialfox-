@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function Register() {
     const [val, setval] = useState({fname:'',lname:'',email:'',password:'',cpassword:''})
     const submit = async () => {
-      if(val.password.length>=8&&val.password==val.cpassword){const url = "http://localhost:5001/user/signup";
+      if(val.password.length>=8&&val.password==val.cpassword){const url = "http://13.234.20.67:5001/user/signup";
       const reqbody = {
         method: "POST",
         headers: { "Content-Type": "application/json" },

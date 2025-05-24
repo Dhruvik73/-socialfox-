@@ -26,14 +26,14 @@ function Comment({ comments, bgColor, postId, setComments }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ postId: postId, comment: comment.value.trim(), userId: userId, mentionedAllies: mentioneAlliesRef.current.getMentionedAllies() })
         }
-        await fetch('http://localhost:5001/post/addComment', body).then((res) => res.json()).then(async res => {
+        await fetch('http://13.234.20.67:5001/post/addComment', body).then((res) => res.json()).then(async res => {
           if (!res.error) {
             const body = {
               method: "POST",
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ postId: postId, userId: userId })
             }
-            await fetch('http://localhost:5001/post/getComments', body).then((res) => res.json()).then((res) => { setComments(res.comments); comment.value = ""; })
+            await fetch('http://13.234.20.67:5001/post/getComments', body).then((res) => res.json()).then((res) => { setComments(res.comments); comment.value = ""; })
 
             //Clear all mentioned allies data from local array and reset user buttone text
             mentioneAlliesRef.current.clearMentionedAllies();
@@ -75,7 +75,7 @@ function Comment({ comments, bgColor, postId, setComments }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reply: reply,userId:userId,commentId:commentId,mentionedAllies:mentioneAlliesRef.current.getMentionedAllies()})
     }
-    await fetch('http://localhost:5001/post/addReply', body).then((res)=>res.json()).then(async(res)=>{
+    await fetch('http://13.234.20.67:5001/post/addReply', body).then((res)=>res.json()).then(async(res)=>{
       if(!res.error){
 
         //After reply added fetch comment so that reply reflect instantly
@@ -84,7 +84,7 @@ function Comment({ comments, bgColor, postId, setComments }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ postId: postId, userId: userId })
         }
-        await fetch('http://localhost:5001/post/getComments', body).then((res) => res.json()).then((res) => { setComments(res.comments);})
+        await fetch('http://13.234.20.67:5001/post/getComments', body).then((res) => res.json()).then((res) => { setComments(res.comments);})
 
         //Clear all mentioned allies data from local array and reset user buttone text
         mentioneAlliesRef.current.clearMentionedAllies(); setCurrentComment(0);
@@ -120,7 +120,7 @@ function Comment({ comments, bgColor, postId, setComments }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type:type,userId:userId,id:id})
     }
-    await fetch('http://localhost:5001/post/commentlike', body).then((res)=>res.json()).then((res)=>{
+    await fetch('http://13.234.20.67:5001/post/commentlike', body).then((res)=>res.json()).then((res)=>{
      if(!res.error){
       const iconString=ReactDOMServer.renderToString(<AiFillHeart/>)
       const iconDiv=document.getElementById(`${id}-commentLike`);
@@ -135,7 +135,7 @@ function Comment({ comments, bgColor, postId, setComments }) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type:type,userId:userId,id:id})
     }
-    await fetch('http://localhost:5001/post/commentlike', body).then((res)=>res.json()).then((res)=>{
+    await fetch('http://13.234.20.67:5001/post/commentlike', body).then((res)=>res.json()).then((res)=>{
      if(!res.error){
       const iconString=ReactDOMServer.renderToString(<AiOutlineHeart/>)
       const iconDiv=document.getElementById(`${id}-commentLike`);

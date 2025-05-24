@@ -13,7 +13,7 @@ function SuggestedAllies() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeFollowed': id })
     }
-    await fetch('http://localhost:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
+    await fetch('http://13.234.20.67:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
       if(res.status){
         var btn=document.getElementById(`${id}-btn`)
         btn.onclick=()=>{
@@ -41,7 +41,7 @@ function SuggestedAllies() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeUnFollowed': id })
     }
-    await fetch('http://localhost:5001/user/unFollow', mybody).then((res)=>(res.json())).then((res)=>{
+    await fetch('http://13.234.20.67:5001/user/unFollow', mybody).then((res)=>(res.json())).then((res)=>{
       if(!res.error){
         var btn=document.getElementById(`${id}-btn`)
         btn.onclick=()=>{
@@ -70,7 +70,7 @@ function SuggestedAllies() {
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({id:logedUser})
       }
-      await fetch('http://localhost:5001/user/suggestedAllies',body).then((res)=>(res.json())).then((res)=>{setSuggestedAllies(res.suggestedAllies)})
+      await fetch('http://13.234.20.67:5001/user/suggestedAllies',body).then((res)=>(res.json())).then((res)=>{setSuggestedAllies(res.suggestedAllies)})
     }
   }
   return (
