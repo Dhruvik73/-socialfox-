@@ -75,7 +75,7 @@ const StoryCard=forwardRef(({ story, totalStories, IsPreview,setParentStoryCount
       body:JSON.stringify({userId:logedUser,storyId:currentStoryId})
     }
     if(logedUser !== story[currentStoryCount]?.userId && !IsPreview){
-    await fetch('http://13.234.20.67:5001/story/addview',body).then((res)=>res.json()).then((res)=>{
+    await fetch('http://65.0.19.137:5001/story/addview',body).then((res)=>res.json()).then((res)=>{
       if(res?.error){
       toast.error(res?.error, {
         position: "top-right",

@@ -9,7 +9,8 @@ router.post('/addNotifications',async(req,res)=>{
               notification:req.body.notification,
               fromUser:req.body.fromUser,
               toUser:req.body.toUser,
-              notificationDate:Date.now()
+              notificationDate:Date.now(),
+              relationID:req.body.relationID
             })
             await newNotification.save();
             res.status(200).json({status:1})
@@ -18,8 +19,27 @@ router.post('/addNotifications',async(req,res)=>{
     }
 })
 router.post('/updateNotifications',async(req,res)=>{
-          const notificationId=(await notification.find({fromUser:req.body.fromUser,toUser:req.body.toUser}).sort({notificationDate:-1}).limit(1)).at(0)?.id;
+  if(req.body.All){
+    await notification.updateMany({$and:[{fromUser:req.body.fromUser},{toUser:req.body.toUser},{isRead:false}]},{isRead:true});
+    res.status(200).json({status:1})
+  }
+  else{
+          const notificationId=(await notification.find({fromUser:req.body.fromUser,toUser:req.body.toUser,isRead:false}).sort({notificationDate:-1}).limit(1)).at(0)?.id;
           await notification.updateOne({_id:notificationId},{isRead:true});
           res.status(200).json({status:1})
+  }
+})
+router.post('/getNotifications',async(req,res)=>{
+  const notifications=await notification.aggregate([{$match:{$and:[{toUser:ObjectID(req.body.logedUser)},{isRead:false},{fromUser:{$ne:ObjectID(req.body.fromUser)}}]}},
+    {$lookup:{from:'users',localField:"fromUser","foreignField":"_id",as:"user"}},
+    {
+      $project: {
+        "user.email": 0,
+        "user.password": 0,
+        "user.following": 0,
+        "user.followers": 0,
+      },
+    }])
+  res.status(200).json({notifications})
 })
 module.exports=router

@@ -12,7 +12,7 @@ export function followMe(id){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeFollowed': id })
           }
-          await fetch('http://13.234.20.67:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
+          await fetch('http://65.0.19.137:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
             dispatch(sendRes(res,'followMe'))
           })
     }

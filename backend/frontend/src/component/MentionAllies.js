@@ -16,7 +16,7 @@ const MentionAllies = forwardRef(({ userRequested }, ref) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ logedUser })
         }
-        await fetch('http://13.234.20.67:5001/user/getUserAllies', body).then((res) => res.json()).then((res) => {
+        await fetch('http://65.0.19.137:5001/user/getUserAllies', body).then((res) => res.json()).then((res) => {
             if (res.logedUserAllies) {
                 setAllies(res.logedUserAllies)
             }

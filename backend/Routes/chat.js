@@ -8,8 +8,9 @@ router.post('/getUserChatsHistory',async(req,res)=>{
     {$match:{$or:[{toUser:ObjectID(req.body.userId)},{fromUser:ObjectID(req.body.userId)}]}},
     {$lookup:{from:'users',foreignField:"_id",localField:"fromUser",as:"fromUser"}},
     {$lookup:{from:'users',foreignField:"_id",localField:"toUser",as:"toUser"}},
+    {$lookup:{from:'notifications',foreignField:"relationID",localField:"_id",as:"newMessages",pipeline:[{$match:{isRead:false}}]}},
     {$sort:{chatUpdateDate:-1}},
-    { $addFields: { lastChat: { $arrayElemAt: ["$chats", -1] } } },
+    { $addFields: { lastChat: { $arrayElemAt: ["$chats", -1] }, hasNewMessages:{$gt:[{ $size: "$newMessages" }, 0]}} },
     {$project:{
         "fromUser.password":0,
         "fromUser.following":0,
@@ -19,7 +20,8 @@ router.post('/getUserChatsHistory',async(req,res)=>{
         "toUser.following":0,
         "toUser.followers":0,
         "toUser.email":0,
-        "chats":0
+        "chats":0,
+        "newMessages":0
     }}
 ]))
   res.status(200).json({userChats})
@@ -38,7 +40,7 @@ router.post('/addUserChats',[body('chat','This chat length is not valid').isLeng
         if(oldChats.length==1){
           oldChats.at(0).chats.push(chat);
           await chats.updateOne({"_id":oldChats.at(0).id},{chats:oldChats.at(0).chats,chatUpdateDate:Date.now()});
-          res.status(200).json({status:1})
+          res.status(200).json({status:1,chatID:oldChats.at(0).id})
         }
         else{
           if(oldChats.length<1){
@@ -50,7 +52,7 @@ router.post('/addUserChats',[body('chat','This chat length is not valid').isLeng
               chatStartDate:Date.now()
             })
             await newChat.save();
-            res.status(200).json({status:1})
+            res.status(200).json({status:1,chatID:newChat.id})
           }
           else{
             res.status(500).json({"error":"internel server error"})

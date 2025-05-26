@@ -31,7 +31,7 @@ function Profile() {
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({id:id})
       }
-      const res=await fetch('http://13.234.20.67:5001/post/getuserpost',body)
+      const res=await fetch('http://65.0.19.137:5001/post/getuserpost',body)
       const result=await res.json()
       setpost(result.allpost)
     }
@@ -51,7 +51,7 @@ function Profile() {
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({'id':id,'firstname':val.fname,'lastname':val.lname})
         }
-        await fetch('http://13.234.20.67:5001/user/updateuser',mybody)
+        await fetch('http://65.0.19.137:5001/user/updateuser',mybody)
         setupdate(true)
       }
     }
@@ -67,7 +67,7 @@ function Profile() {
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({'id':id,'url':myurl})
       }
-      const res=await fetch('http://13.234.20.67:5001/user/profile',mybody)
+      const res=await fetch('http://65.0.19.137:5001/user/profile',mybody)
       const result=await res.json()
       if(result.myuser.acknowledged){
         toast.success("Profile Photo Updated Successfully 👍", {
@@ -90,7 +90,7 @@ function Profile() {
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({'id':id})
       }
-      const res=await fetch('http://13.234.20.67:5001/user/fetchuser',mybody)
+      const res=await fetch('http://65.0.19.137:5001/user/fetchuser',mybody)
       const result=await res.json()
       seturl(result?.logedUser?.profilephoto)
       setuser(JSON.parse(JSON.stringify(result?.logedUser)))

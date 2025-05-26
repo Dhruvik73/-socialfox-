@@ -11,6 +11,10 @@ const notification = new Schema({
         type: mongoose.Types.ObjectId,
         ref: user
     },
+    relationID: {
+        type: mongoose.Types.ObjectId,
+        required:true
+    },
     notification: {
         type: Object,
         required:true

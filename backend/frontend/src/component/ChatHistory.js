@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import UserProfileWithName from './UserProfileWithName';
-function ChatHistory({setToUser,setToUserDetails,recentChatCount,setOldCHats,toUser,bubbleNeeded}) {
+function ChatHistory({setToUser,setToUserDetails,recentChatCount,setOldCHats,toUser}) {
   const [userChats,setUserChats]=useState([]);
   const logedUser=localStorage.getItem('id')?localStorage.getItem('id'):0;
   useEffect(() => {
@@ -12,7 +12,7 @@ function ChatHistory({setToUser,setToUserDetails,recentChatCount,setOldCHats,toU
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({userId:logedUser})
     }
-    await fetch('http://13.234.20.67:5001/chat/getUserChatsHistory',body).then(res=>res.json()).then((res)=>{
+    await fetch('http://65.0.19.137:5001/chat/getUserChatsHistory',body).then(res=>res.json()).then((res)=>{
       if(res.userChats){
         setUserChats(res.userChats)
         if(recentChatCount===0){
@@ -35,7 +35,7 @@ function ChatHistory({setToUser,setToUserDetails,recentChatCount,setOldCHats,toU
       <span>Chats</span>
       <div className='d-flex flex-column align-items-center' id='chatHistory'>
         {userChats.map((k,i)=>{
-          return <div className='mt-3 oldChats w-75' key={i} onClick={()=>{openUserChat(k)}}><UserProfileWithName user={k?.fromUser[0]?._id===logedUser?k?.toUser[0]:k?.fromUser[0]} lastChat={k?.lastChat?.chat}/>{bubbleNeeded&&<span>1</span>}</div>
+          return <div className='mt-3 oldChats d-flex align-items-center justify-content-between w-75' key={i} onClick={()=>{openUserChat(k)}}><UserProfileWithName user={k?.fromUser[0]?._id===logedUser?k?.toUser[0]:k?.fromUser[0]} lastChat={k?.lastChat?.chat}/></div>
         })}
       </div>
       </div>

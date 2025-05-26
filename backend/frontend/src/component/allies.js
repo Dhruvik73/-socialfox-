@@ -25,7 +25,7 @@ function Allies() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({"id":localStorage.getItem('id')?localStorage.getItem('id'):0})
     }
-    const myres= await fetch('http://13.234.20.67:5001/user/fetchuser',body)
+    const myres= await fetch('http://65.0.19.137:5001/user/fetchuser',body)
     const myresult=await myres.json()
     setfollowing(myresult.logedUser?.following)
     setfollower(myresult.logedUser?.followers)
@@ -34,7 +34,7 @@ function Allies() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({"id":localStorage.getItem('id')?localStorage.getItem('id'):0})
     }
-    const res= await fetch('http://13.234.20.67:5001/user/allusers',mybody)
+    const res= await fetch('http://65.0.19.137:5001/user/allusers',mybody)
     const result=await res.json()
     if(result.users){
       if(myresult.logedUser?.following.length>0){
@@ -61,7 +61,7 @@ function Allies() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeFollowed': id })
     }
-    await fetch('http://13.234.20.67:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
+    await fetch('http://65.0.19.137:5001/user/follow', mybody).then((res)=>(res.json())).then((res)=>{
       if(res.status){
         var followed=document.getElementById(id)
         var btn=document.getElementById(`${id}-btn`)
@@ -91,7 +91,7 @@ function Allies() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ "logedUserId": localStorage.getItem('id')?localStorage.getItem('id'):0, 'toBeUnFollowed': id })
     }
-    await fetch('http://13.234.20.67:5001/user/unFollow', mybody).then((res)=>(res.json())).then((res)=>{
+    await fetch('http://65.0.19.137:5001/user/unFollow', mybody).then((res)=>(res.json())).then((res)=>{
       if(!res.error){
         var unFollowed=document.getElementById(id)
         var btn=document.getElementById(`${id}-btn`)

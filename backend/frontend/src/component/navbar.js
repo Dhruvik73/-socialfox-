@@ -12,13 +12,15 @@ import Showstory from './showstory'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLastviewedPost } from '../Actions/userIntrection';
 import io from 'socket.io-client'
-const Socket=io.connect("http://13.234.20.67:5001")
+const Socket=io.connect("http://65.0.19.137:5001")
 function Navbar() {
   const dispatch=useDispatch();
   const state=useSelector(state=>state.userIntrection.payload);
   let id=localStorage.getItem('id')?localStorage.getItem('id'):0
+  let toUser=localStorage.getItem('toUser')?localStorage.getItem('toUser'):0
   const [user,setuser]=useState({})
   const [notifications,setNotifications]=useState([]);
+  const [toggleNotification,setToggleNotification]=useState(false);
   const [storyUser,setStoryUser]=useState([])
   const [userId,setUserId]=useState(0)
   const [logedUserStoryCount,setLogedUserStoryCount]=useState(0)
@@ -26,13 +28,31 @@ function Navbar() {
       getStories()
   }, [])
   useEffect(() => {
-    Socket.on("clientNotification",(data)=>{
+    Socket.on("clientNotification",async(data)=>{ // capture the notification from different components
       if(id===data?.chat?.to){
-      setNotifications([...notifications,data])
-      }
+        if(toUser===data?.chat?.from){
+      Socket.emit("updateNotificationStatus",data)
+        }
+        getNotifications();
+        }
     })
   },[Socket,notifications])
   
+  const getNotifications=async()=>{
+    const body={
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({logedUser:id,fromUser:toUser}) // here we passed toUser as fromUser to not get notification whose chat is open
+    }
+    if(id!=null){
+    await fetch('http://localhost:5001/notification/getNotifications',body).then(res=>res.json()).then(res=>{
+      if(res.notifications){
+        setNotifications(res.notifications)
+      }
+    })
+    }
+
+  }
   const getStories=async()=>{
     const body={
       method:'POST',
@@ -40,7 +60,7 @@ function Navbar() {
       body:JSON.stringify({id:id})
     }
     if(id!=null){
-    const res=await fetch('http://13.234.20.67:5001/user/fetchuser',body)
+    const res=await fetch('http://65.0.19.137:5001/user/fetchuser',body)
     const result=await res.json()
     setuser(result?.logedUser)
     dispatch(setLastviewedPost(state.posts,state.comments,state.postId,state.totalPosts,state.isCloseBtnClicked,result?.logedUser))
@@ -73,13 +93,20 @@ function Navbar() {
                 <Link to={'/'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(9 83 147 / 96%)'}}><BiHomeAlt/></span></Link>
                 <Link to={'/allies'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'rgb(12 97 169 / 96%)'}}><FaUserFriends/></span></Link>
                 <Link to={'/addpost'}><span className='badge badge-light' style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><MdOutlineAddToPhotos/></span></Link>
-                <span className='badge badge-light position-relative'><Link to={`/chat`} style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><BiChat/></Link><span className="position-absolute top-25 start-75 translate-middle badge rounded-pill bg-info">
+                <div className='badge badge-light position-relative'><Link to={`/chat`} style={{fontSize:1.8+'vw',color:'#157ad0f5'}}><BiChat/></Link><span className="position-absolute top-25 start-75 translate-middle badge rounded-pill cursor-pointer bg-info" onClick={()=>{setToggleNotification(prev=>!prev)}}>
     {notifications.length}
     <span className="visually-hidden">unread messages</span>
-  </span></span>
+  </span>{toggleNotification&&<div className='card notificationCard'>
+    {notifications.map((k,i)=>{
+          return <div className='mt-3 d-flex align-items-center justify-content-between w-100' key={i}><div className='d-flex userText'><UserProfileWithName user={k?.user[0]} lastChat={k?.notification?.chat?.chat} />
+          <span className='ms-2 fw-normal fs-5'>Sent a message</span>
+          </div></div>
+        })}
+  </div>}</div>
                 </span>
             </ul>
         </div>
+        
     </div>
     {userId!=0&&<Showstory userId={userId}></Showstory>}
 </>

@@ -19,7 +19,7 @@ function Showstory({ userId }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: id,logedUserOrNot:logedUser===id}),
     };
-    const res = await fetch("http://13.234.20.67:5001/story/getstory", body);
+    const res = await fetch("http://65.0.19.137:5001/story/getstory", body);
     const result = await res.json();
     setStory(result?.userStories);
     SetTotalStories(result?.totalStories);

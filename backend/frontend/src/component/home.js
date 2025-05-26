@@ -11,10 +11,12 @@ import Post from './Post';
 import Comment from './Comment';
 import UserProfileWithName from './UserProfileWithName';
 import { useDispatch, useSelector } from 'react-redux';
+import loader from '../images/loader.gif'
 function Home() {
   const dispatch=useDispatch();
   const state=useSelector(state=>state.userIntrection.payload)
   const [page,setpage]=useState(5);
+  const [loading,setLoading]=useState(true);
   const [post,setpost]=useState([]);
   const userId=localStorage.getItem("id");
   const [count,setcount]=useState(0);
@@ -27,6 +29,7 @@ function Home() {
     checkUserLastVisitedPost()
   },[])
   const fetchpost=async()=>{
+    setLoading(true)
     if(!(state.posts)){
     const userId=localStorage.getItem('id')?localStorage.getItem('id'):0
     const mybody={
@@ -34,7 +37,7 @@ function Home() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({limit:page,userId:userId})
     }
-    const res=await fetch('http://13.234.20.67:5001/post/fetchpost',mybody)
+    const res=await fetch('http://65.0.19.137:5001/post/fetchpost',mybody)
     const result=await res.json()
     if(result.allpost){
      setpost(result.allpost)
@@ -42,6 +45,7 @@ function Home() {
      dispatch(setLastviewedPost(result.allpost,[],0,result.totalPost,false,result.logedUserDetails))
     }
   }
+  setLoading(false)
   }
   const fetchmoredata=async()=>{
     if((state.posts && state.posts.length < state.totalPosts)){
@@ -51,7 +55,7 @@ function Home() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({limit:page+5})
     }
-    const res=await fetch('http://13.234.20.67:5001/post/fetchpost',mybody)
+    const res=await fetch('http://65.0.19.137:5001/post/fetchpost',mybody)
     const result=await res.json()
     if(result.allpost){
      setpost(post.concat(result.allpost))
@@ -65,7 +69,7 @@ function Home() {
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"like"})
         }
-        await fetch('http://13.234.20.67:5001/post/like',body).then((res)=>res.json()).then((res)=>{
+        await fetch('http://65.0.19.137:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
            addLikeDislikebtns(id,"like",res.count);
           }
@@ -78,7 +82,7 @@ function Home() {
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"fillLike"})
         }
-        await fetch('http://13.234.20.67:5001/post/like',body).then((res)=>res.json()).then((res)=>{
+        await fetch('http://65.0.19.137:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
             addLikeDislikebtns(id,"fillLike",res.count);
           }
@@ -91,7 +95,7 @@ function Home() {
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"dislike"})
         }
-        await fetch('http://13.234.20.67:5001/post/like',body).then((res)=>res.json()).then((res)=>{
+        await fetch('http://65.0.19.137:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
             addLikeDislikebtns(id,"dislike",res.count);
           }
@@ -103,13 +107,12 @@ function Home() {
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({id:id,userId:localStorage.getItem('id')?localStorage.getItem('id'):0,type:"fillDislike"})
         }
-        await fetch('http://13.234.20.67:5001/post/like',body).then((res)=>res.json()).then((res)=>{
+        await fetch('http://65.0.19.137:5001/post/like',body).then((res)=>res.json()).then((res)=>{
           if(typeof(res.count)=="number"){
             addLikeDislikebtns(id,"fillDislike",res.count);
           }
         })
   }
-
   const addLikeDislikebtns = (id, type,count) => {
     var span, iconString, iconNode
     document.getElementById(`${type}-${id}`).remove()
@@ -182,7 +185,7 @@ function Home() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({postId:currentPostId,userId:userId})
     }
-    await fetch('http://13.234.20.67:5001/post/getComments',body).then((res)=>res.json()).then((res)=>{setComments(res.comments);dispatch(setLastviewedPost(post,res.comments,currentPostId,count,false,state.logedUserDetails))})
+    await fetch('http://65.0.19.137:5001/post/getComments',body).then((res)=>res.json()).then((res)=>{setComments(res.comments);dispatch(setLastviewedPost(post,res.comments,currentPostId,count,false,state.logedUserDetails))})
   }
   }
 
@@ -234,6 +237,7 @@ function Home() {
                   </div>
                 </div>
             })}
+            {loading&&<img src={loader}></img>}
             <Comment postId={postId} comments={defferedComments} bgColor={bgColor} setComments={setComments}></Comment>
           </div>
           <div className='col-lg-4 col-md-6 col-sm-8 d-flex align-items-center flex-column'>

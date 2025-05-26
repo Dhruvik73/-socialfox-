@@ -7,11 +7,11 @@ import ChatHistory from './ChatHistory';
 import Search from './search';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from "react-toastify";
+import { updateNotificationStatus } from '../middleware/notificationManager';
 import 'react-toastify/dist/ReactToastify.css';
-const connectSocketIO=io.connect('http://13.234.20.67:5001');
+const connectSocketIO=io.connect('http://65.0.19.137:5001');
 function ChatRoom() {
   const [toUser,setToUser]=useState("");
-  const [bubbleNeeded,setBubbleNeeded]=useState(false);
   const [toUserDetails,setToUserDetails]=useState({});
   const [recentChatCount,setRecentChatCount]=useState(0);
   const logedUser=localStorage.getItem('id')?localStorage.getItem('id'):0;
@@ -29,7 +29,7 @@ function ChatRoom() {
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({fromUser:data?.chat?.from,toUser:data?.chat?.to})
           }
-          await fetch('http://13.234.20.67:5001/notification/updateNotifications',body).then(res=>res.json()).then((res)=>{
+          await fetch('http://65.0.19.137:5001/notification/updateNotifications',body).then(res=>res.json()).then((res)=>{
             if(res.error){
               toast.warning(res.error, {
                 position: "top-right",
@@ -51,10 +51,11 @@ function ChatRoom() {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({fromUser:fromUser,toUser:toUser})
     }
-    await fetch('http://13.234.20.67:5001/chat/getUserChats',body).then(res=>res.json()).then((res)=>{
+    await fetch('http://65.0.19.137:5001/chat/getUserChats',body).then(res=>res.json()).then((res)=>{
       if(res.userChats&&res.userChats.length>0){
         setRecentMessages(res.userChats[0]?.chats)
         setToUserDetails(res.userChats[0]?.fromUser[0]?._id===fromUser?res.userChats[0]?.toUser[0]:res.userChats[0]?.fromUser[0])
+        updateNotificationStatus({fromUser:toUser,toUser:fromUser,All:true})
       }
       else{
         setRecentMessages([])
@@ -78,9 +79,9 @@ function ChatRoom() {
       <div className='col-lg-3 h-100'>
       <Search setToUser={setToUser} setToUserDetails={setToUserDetails} setOldCHats={setOldCHats} toUser={toUser}/>
       </div>
-      <div className='col-lg-5 h-100'>{toUser&&<ChatBar setRecentMessages={setRecentMessages} recentMessages={recentMessages} socket={connectSocketIO} setBubbleNeeded={setBubbleNeeded} setRecentChatCount={setRecentChatCount} toUser={toUser} fromUser={logedUser} toUserDetails={toUserDetails} fromUserDetails={state?.logedUserDetails}/>}</div>
+      <div className='col-lg-5 h-100'>{toUser&&<ChatBar setRecentMessages={setRecentMessages} recentMessages={recentMessages} socket={connectSocketIO} setRecentChatCount={setRecentChatCount} toUser={toUser} fromUser={logedUser} toUserDetails={toUserDetails} fromUserDetails={state?.logedUserDetails}/>}</div>
       <div className='col-lg-3'>
-        <ChatHistory setToUser={setToUser} setToUserDetails={setToUserDetails} recentChatCount={recentChatCount} setOldCHats={setOldCHats} bubbleNeeded={bubbleNeeded} toUser={toUser}/>
+        <ChatHistory setToUser={setToUser} setToUserDetails={setToUserDetails} recentChatCount={recentChatCount} setOldCHats={setOldCHats} toUser={toUser}/>
       </div>
     </div>
     </div>

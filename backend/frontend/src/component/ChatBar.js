@@ -4,8 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { AiOutlineSend } from 'react-icons/ai'
 import UserProfileWithName from './UserProfileWithName';
-import {throwNotifications} from '../middleware/notificationManager'
-function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,setRecentChatCount,recentMessages,setRecentMessages,setBubbleNeeded}) {
+import {throwNotifications, updateNotificationStatus} from '../middleware/notificationManager'
+function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,setRecentChatCount,recentMessages,setRecentMessages}) {
     useEffect(() => {
       captureMessageAndStoreHistory()
       }, [socket]);
@@ -22,31 +22,13 @@ function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,setRecent
          chatInput.value="";
          setRecentMessages([...recentMessages,messageWithDetails]);
          await socket.emit("sendMessage",[...recentMessages,messageWithDetails])
-         const notification={
-                chat:messageWithDetails,
-                notificationType:"chatMessage",
-                fromUser:fromUser,
-                toUser:toUser
-         }
-         const resultNotification=throwNotifications(notification,socket);
-         if(resultNotification.error){
-          toast.warning(resultNotification.error, {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-         }
-
+        
          const body={
           method:"POST",
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({chat:message,fromUser:fromUser,toUser:toUser})
         }
-        await fetch('http://13.234.20.67:5001/chat/addUserChats',body).then(res=>res.json()).then((res)=>{
+        await fetch('http://65.0.19.137:5001/chat/addUserChats',body).then(res=>res.json()).then((res)=>{
           if(res.error){
             toast.warning(res.error, {
               position: "top-right",
@@ -60,6 +42,24 @@ function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,setRecent
           }
           else{
             setRecentChatCount(prev=>prev+1);
+            const notification = {
+              chat: messageWithDetails,
+              notificationType: "chatMessage",
+              fromUser: fromUser,
+              toUser: toUser,
+            };
+            const resultNotification = throwNotifications(notification, socket,res?.chatID);
+            if (resultNotification.error) {
+              toast.warning(resultNotification.error, {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+            }
           }
         })
         
@@ -69,13 +69,16 @@ function ChatBar({socket,fromUser,toUser,toUserDetails,fromUserDetails,setRecent
         await socket.on('messageResponse', async(data) => {
         if(data && Array.isArray(data)&&(data[data.length-1].to===fromUser&&data[data.length-1].from===localStorage.getItem('toUser'))){
         setRecentMessages(data);
-        }
-        if(data && Array.isArray(data)&&(data[data.length-1].to===fromUser&&data[data.length-1].from!==localStorage.getItem('toUser'))){
-          setBubbleNeeded(true)
+        socket.on("updateNotificationStatus",(data)=>{
+          if(fromUser===data?.chat?.to && localStorage.getItem('toUser')===data?.chat?.from){
+          updateNotificationStatus(data)
+          }
+        })
         }
         setRecentChatCount(prev=>prev+1);
         });
       }
+
   return (
     <div className='w-100 h-100'>
     <ToastContainer

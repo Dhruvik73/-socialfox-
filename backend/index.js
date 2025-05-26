@@ -28,7 +28,7 @@ const server=http.createServer(app);
 const io=new Server(server,{
     cors:{
         methods:["GET","POST"],
-        origin:"http://13.234.20.67:3000"
+        origin:"http://65.0.19.137:3000"
     }
 })
 
@@ -40,6 +40,9 @@ io.on("connection",(socket)=>{
     })
     socket.on("serverNotification",(data)=>{
         io.emit("clientNotification",data)
+    })
+    socket.on("updateNotificationStatus",(data)=>{
+        io.emit("updateNotificationStatus",data)
     })
 })
 

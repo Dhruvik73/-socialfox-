@@ -31,7 +31,7 @@ router.post('/signup',[
             firstname:req.body.firstname,
             lastname:req.body.lastname
             })
-            const token=jwt.sign(myuser.id,secret)
+            const token=jwt.sign({id:myuser.id},secret,{expiresIn: '24h'});
             res.status(200).json({myuser,token})
         }
        } catch (e) {
@@ -50,7 +50,7 @@ router.post('/login',[
         if(myuser){
             const compare=await bcrypt.compare(req.body.password,myuser.password)
             if(compare){
-                const token=jwt.sign(myuser.id,secret)
+                const token=jwt.sign({id:myuser.id},secret);
                 res.json({myuser,token})
             }
             else{
@@ -71,30 +71,36 @@ router.post('/login',[
 router.post('/verify',async(req,res)=>{
   try{
     const token=req.body.token
-    var id=jwt.verify(token,secret)
+    var decoded=jwt.verify(token,secret)
+    if(new Date()>=decoded.iat*1000)
+    {
+      res.status(401).json({"message":"Token Expired,please login again"});
+    }
+    if(id){
+      const myuser=await user.findById({"_id":decoded.id})
+      if(myuser){
+        res.status(200).json({'myuser':myuser.id})
+      }
+      else{
+        res.status(400).json({"login":"you need to signUp"})
+      }
+      
+    }
+    else{
+      res.status(400).json({"host":"you are not allowed"})
+    }
+    
   }catch(e){
    res.status(400).json({'error':'you need to login'})
   }
-if(id){
-  const myuser=await user.findById({"_id":id})
-  if(myuser){
-    res.status(200).json({'myuser':myuser.id})
-  }
-  else{
-    res.status(400).json({"login":"you need to signUp"})
-  }
-  
-}
-else{
-  res.status(400).json({"host":"you are not allowed"})
-}
 })
+
 router.post('/profile',async(req,res)=>{
   const myuser=await user.updateOne({"_id":req.body.id},{"profilephoto":req.body.url})
   res.status(200).json({myuser})
 })
 router.post('/fetchuser',async(req,res)=>{
-  // try {
+  try {
     const logedUser=await user.findById(req.body.id).select('-email -password');
     const userStories = await story.aggregate([
       { $match: { $expr: { $in: ['$userId',logedUser?.following] } } }, 
@@ -104,9 +110,9 @@ router.post('/fetchuser',async(req,res)=>{
     ])
     const logedUserStoryCount=(await story.find({userId:req.body.id}))?.length;
     res.status(200).json({logedUser,userStories,logedUserStoryCount})
-  // } catch (error) {
-  //   res.status(500).json({error:"Some error occured try again!"})
-  // }
+  } catch (error) {
+    res.status(500).json({error:"Some error occured try again!"})
+  }
 })
 router.post('/allies',async(req,res)=>{
    const myuser=await user.updateOne({'_id':req.body.id},{'following':req.body.detail})

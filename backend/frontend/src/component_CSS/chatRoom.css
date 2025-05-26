@@ -24,6 +24,10 @@
     box-shadow: 5px 5px 10px rgba(12, 97, 169,0.5);
     cursor: pointer;
 }
+.messageAlert{
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(245, 64, 33, 0.5);
+}
 .chatsDiv::-webkit-scrollbar{
     width:5px;
 }

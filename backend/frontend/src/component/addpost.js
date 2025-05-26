@@ -38,7 +38,7 @@ const submit=async()=>{
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({id:id,post:userPosts,des:des})
   }
-  const res=await fetch('http://13.234.20.67:5001/post/add',mybody)
+  const res=await fetch('http://65.0.19.137:5001/post/add',mybody)
    const result= await res.json()
    if(!result.error){
     toast.success("Post Uploaded Successfully 👍", {

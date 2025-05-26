@@ -7,16 +7,20 @@ function Login() {
   const [val, setval] = useState({ email: "", password: "" });
   const navigation=useNavigate();
   const submit = async () => {
-    const url = "http://13.234.20.67:5001/user/login";
+<<<<<<< Updated upstream
+    const url = "http://65.0.19.137:5001/user/login";
+=======
+    const url = "https://localhost:7072/api/Authentication/login";
+>>>>>>> Stashed changes
     const reqbody = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: val.email, password: val.password }),
+      body: JSON.stringify({ userEmail: val.email, password: val.password }),
     };
     const res = await fetch(url, reqbody);
     const result = await res.json();
-    if (result.myuser) {
-      localStorage.setItem("token", result.token);
+    if (result?.status==1) {
+      localStorage.setItem("token", result.validResult);
       localStorage.setItem('id',result.myuser._id)
       toast.success("Login Successfully 👍", {
         position: "top-right",

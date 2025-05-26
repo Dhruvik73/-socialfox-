@@ -31,7 +31,7 @@ function Story() {
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({id:id,story:array,mediaType:'video'})
       }
-      await fetch('http://13.234.20.67:5001/story/add',body).then((res)=>res.json()).then((res)=>{
+      await fetch('http://65.0.19.137:5001/story/add',body).then((res)=>res.json()).then((res)=>{
         if(res.msg){
         toast.success(res.msg, {
           position: "top-right",
